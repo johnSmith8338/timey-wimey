@@ -111,24 +111,37 @@ export function buildAnimatedArea(
 export function buildDonut(slices: ChartPoint[]): DonutArc[] {
     if (!slices.length) return [];
 
-    const total = slices.reduce((a, b) => a + b.value, 0);
+    const total = slices.reduce((sum, slice) => sum + slice.value, 0);
+
+    if (total === 0) {
+        return slices.map(slice => ({
+            label: slice.label,
+            value: slice.value,
+            percent: 0,
+            startAngle: -Math.PI / 2,
+            endAngle: -Math.PI / 2
+        }));
+    }
+
     let current = -Math.PI / 2;
+
     return slices.map(slice => {
         const percent = slice.value / total;
         const angle = FULL * percent;
-        const start = current;
-        const end = current + angle;
 
-        current = end;
+        const startAngle = current;
+        const endAngle = current + angle;
+
+        current = endAngle;
 
         return {
             label: slice.label,
             value: slice.value,
             percent,
-            startAngle: start,
-            endAngle: end
-        }
-    })
+            startAngle,
+            endAngle
+        };
+    });
 }
 
 export function buildArcPath(

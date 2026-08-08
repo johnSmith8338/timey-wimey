@@ -39,7 +39,6 @@ export function morphPoints(
     update: (points: MorphPoint[]) => void,
     duration = 600
 ) {
-
     morphArray(
         current,
         target.map(p => ({
@@ -63,22 +62,30 @@ export function morphArcs(
     update: (arcs: MorphArc[]) => void,
     duration = 600
 ) {
+    const previous = structuredClone(current);
+    animate(duration, progress => {
+        update(
+            target.map((arc, index) => {
+                const old = previous[index];
 
-    morphArray(
-        current,
-        target.map(a => ({
-            ...a,
-            currentStart: a.startAngle,
-            currentEnd: a.endAngle
-        })),
-        (from, to, progress) => ({
-            ...to,
-            currentStart: lerp(from.currentStart, to.startAngle, progress),
-            currentEnd: lerp(from.currentEnd, to.endAngle, progress)
-        }),
-        update,
-        duration
-    );
+                return {
+                    ...arc,
+
+                    currentStart: lerp(
+                        old?.currentStart ?? arc.startAngle,
+                        arc.startAngle,
+                        progress
+                    ),
+
+                    currentEnd: lerp(
+                        old?.currentEnd ?? arc.endAngle,
+                        arc.endAngle,
+                        progress
+                    )
+                };
+            })
+        );
+    });
 }
 
 export function morphNumber(
