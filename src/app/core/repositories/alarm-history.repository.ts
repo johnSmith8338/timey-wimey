@@ -13,7 +13,7 @@ export class AlarmHistoryRepository {
     async load(): Promise<AlarmHistoryItem[]> {
         return (
             await this.storage.get<AlarmHistoryItem[]>(
-                DbStore.Alarms,
+                DbStore.History,
                 StorageKey.AlarmHistory
             )
         ) ?? [];
@@ -21,7 +21,7 @@ export class AlarmHistoryRepository {
 
     async save(history: AlarmHistoryItem[]) {
         await this.storage.set(
-            DbStore.Alarms,
+            DbStore.History,
             StorageKey.AlarmHistory,
             history
         )
@@ -29,7 +29,7 @@ export class AlarmHistoryRepository {
 
     async clear() {
         await this.storage.delete(
-            DbStore.Alarms,
+            DbStore.History,
             StorageKey.AlarmHistory
         )
     }

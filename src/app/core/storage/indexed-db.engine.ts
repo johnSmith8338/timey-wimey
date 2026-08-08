@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { StorageEngine } from "./storage-engine";
-import { DATABASE_NAME, DATABASE_VERSION, DbStore } from "./database";
+import { DATABASE_NAME, DATABASE_VERSION, DbStore, HISTORY_MIGRATION_VERSION } from "./database";
+import { StorageKey } from "./storage-keys";
 
 @Injectable({
     providedIn: 'root'
@@ -14,14 +15,18 @@ export class IndexedDbEngine extends StorageEngine {
 
             request.onerror = () => reject(request.error);
             request.onsuccess = () => resolve(request.result);
-            request.onupgradeneeded = () => {
+            request.onupgradeneeded = (event) => {
                 const db = request.result;
-                Object.values(DbStore).forEach(store => {
-                    if (!db.objectStoreNames.contains(store)) {
-                        db.createObjectStore(store);
-                    }
-                })
-            }
+                const transaction = request.transaction!;
+
+                if (!db.objectStoreNames.contains(DbStore.History)) {
+                    db.createObjectStore(DbStore.History);
+                }
+
+                if (event.oldVersion < HISTORY_MIGRATION_VERSION) {
+                    this.migrateToHistory(db, transaction);
+                }
+            };
         })
     }
 
@@ -78,5 +83,58 @@ export class IndexedDbEngine extends StorageEngine {
             request.onsuccess = () => resolve();
             request.onerror = () => reject(request.error);
         })
+    }
+
+    private migrateToHistory(
+        db: IDBDatabase,
+        transaction: IDBTransaction
+    ): void {
+        const historyStore = transaction.objectStore(DbStore.History);
+
+        // Alarm history
+        if (db.objectStoreNames.contains(DbStore.Alarms)) {
+            const alarmsStore = transaction.objectStore(DbStore.Alarms);
+
+            const alarmRequest = alarmsStore.get(StorageKey.AlarmHistory);
+
+            alarmRequest.onsuccess = () => {
+                const history = alarmRequest.result;
+
+                if (history !== undefined) {
+                    historyStore.put(
+                        history,
+                        StorageKey.AlarmHistory
+                    );
+                }
+            };
+
+            // Timer history
+            const timerRequest = alarmsStore.get(StorageKey.TimerHistory);
+
+            timerRequest.onsuccess = () => {
+                const history = timerRequest.result;
+
+                if (history !== undefined) {
+                    historyStore.put(
+                        history,
+                        StorageKey.TimerHistory
+                    );
+                }
+            };
+        }
+
+        // Stopwatch sessions
+        if (db.objectStoreNames.contains(DbStore.Sessions)) {
+            const sessionsStore = transaction.objectStore(DbStore.Sessions);
+
+            const sessionsRequest = sessionsStore.getAll();
+
+            sessionsRequest.onsuccess = () => {
+                historyStore.put(
+                    sessionsRequest.result,
+                    StorageKey.StopwatchHistory
+                );
+            };
+        }
     }
 }

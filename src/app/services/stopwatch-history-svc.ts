@@ -24,7 +24,8 @@ export class StopwatchHistorySvc {
   }
 
   async load() {
-    const history = await this.repo.getAll();
+    const history = await this.repo.load();
+
     const cleaned = cleanupHistory(
       history,
       this.settings.historyRetentionDays(),
@@ -65,8 +66,8 @@ export class StopwatchHistorySvc {
       stats
     }
 
-    await this.repo.save(finished);
     this.history.update(list => [finished, ...list]);
+    await this.repo.save(this.history());
     this.current.set(null);
     this.touch();
   }
@@ -102,8 +103,8 @@ export class StopwatchHistorySvc {
   }
 
   async deleteSession(id: string) {
-    await this.repo.delete(id);
     this.history.update(list => list.filter(x => x.id !== id));
+    await this.repo.save(this.history());
     this.touch();
   }
 
@@ -114,7 +115,7 @@ export class StopwatchHistorySvc {
   }
 
   async restore(history: LapSession[]) {
-    await this.repo.restore(history);
+    await this.repo.save(history);
     this.history.set(structuredClone(history));
     this.touch();
   }

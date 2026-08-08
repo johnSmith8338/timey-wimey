@@ -13,7 +13,7 @@ export class TimerHistoryRepository {
     async load(): Promise<TimerHistoryItem[]> {
         return (
             await this.storage.get<TimerHistoryItem[]>(
-                DbStore.Alarms,
+                DbStore.History,
                 StorageKey.TimerHistory
             )
         ) ?? [];
@@ -21,7 +21,7 @@ export class TimerHistoryRepository {
 
     async save(history: TimerHistoryItem[]) {
         await this.storage.set(
-            DbStore.Alarms,
+            DbStore.History,
             StorageKey.TimerHistory,
             history
         )
@@ -29,7 +29,7 @@ export class TimerHistoryRepository {
 
     async clear() {
         await this.storage.delete(
-            DbStore.Alarms,
+            DbStore.History,
             StorageKey.TimerHistory
         )
     }

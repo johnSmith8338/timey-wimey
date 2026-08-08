@@ -5,4 +5,5 @@ export enum StorageKey {
     AlarmHistory = 'alarm-history',
     Settings = 'settings',
     TimerHistory = 'timer-history',
+    StopwatchHistory = 'stopwatch-history'
 }

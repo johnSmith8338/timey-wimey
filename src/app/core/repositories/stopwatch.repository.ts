@@ -1,6 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { IndexedDbEngine } from "../storage/indexed-db.engine";
 import { DbStore } from "../storage/database";
+import { StorageKey } from "../storage/storage-keys";
 
 export interface LapSession {
     id: string;
@@ -43,37 +44,31 @@ export const EMPTY_STOPWATCH_STATS: StopwatchSessionStats = {
 export class StopwatchRepository {
     private readonly storage = inject(IndexedDbEngine);
 
-    save(session: LapSession) {
-        return this.storage.set(
-            DbStore.Sessions,
-            session.id,
-            session
-        )
+    async load(): Promise<LapSession[]> {
+        return (
+            await this.storage.get<LapSession[]>(
+                DbStore.History,
+                StorageKey.StopwatchHistory
+            )
+        ) ?? [];
     }
 
-    delete(id: string) {
-        return this.storage.delete(
-            DbStore.Sessions,
-            id
-        )
+    async save(history: LapSession[]): Promise<void> {
+        await this.storage.set(
+            DbStore.History,
+            StorageKey.StopwatchHistory,
+            history
+        );
     }
 
-    getAll() {
-        return this.storage.getAll<LapSession>(
-            DbStore.Sessions
-        )
+    async clear(): Promise<void> {
+        await this.storage.delete(
+            DbStore.History,
+            StorageKey.StopwatchHistory
+        );
     }
 
-    clear() {
-        return this.storage.clear(
-            DbStore.Sessions
-        )
-    }
-
-    async restore(history: LapSession[]) {
-        await this.clear();
-        for (const session of history) {
-            await this.save(session);
-        }
+    async restore(history: LapSession[]): Promise<void> {
+        await this.save(history);
     }
 }
