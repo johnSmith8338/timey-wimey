@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { StorageEngine } from "./storage-engine";
-import { DATABASE_NAME, DATABASE_VERSION, DbStore, HISTORY_MIGRATION_VERSION } from "./database";
+import { DATABASE_NAME, DATABASE_VERSION, DbStore, HISTORY_MIGRATION_VERSION, LEGACY_SESSIONS_STORE, REMOVE_SESSIONS_VERSION } from "./database";
 import { StorageKey } from "./storage-keys";
 
 @Injectable({
@@ -25,6 +25,10 @@ export class IndexedDbEngine extends StorageEngine {
 
                 if (event.oldVersion < HISTORY_MIGRATION_VERSION) {
                     this.migrateToHistory(db, transaction);
+                }
+
+                if (event.oldVersion < REMOVE_SESSIONS_VERSION && db.objectStoreNames.contains(LEGACY_SESSIONS_STORE)) {
+                    db.deleteObjectStore(LEGACY_SESSIONS_STORE);
                 }
             };
         })
@@ -91,7 +95,7 @@ export class IndexedDbEngine extends StorageEngine {
     ): void {
         const historyStore = transaction.objectStore(DbStore.History);
 
-        // Alarm history
+        // Alarm + Timer history
         if (db.objectStoreNames.contains(DbStore.Alarms)) {
             const alarmsStore = transaction.objectStore(DbStore.Alarms);
 
@@ -108,7 +112,6 @@ export class IndexedDbEngine extends StorageEngine {
                 }
             };
 
-            // Timer history
             const timerRequest = alarmsStore.get(StorageKey.TimerHistory);
 
             timerRequest.onsuccess = () => {
@@ -124,8 +127,8 @@ export class IndexedDbEngine extends StorageEngine {
         }
 
         // Stopwatch sessions
-        if (db.objectStoreNames.contains(DbStore.Sessions)) {
-            const sessionsStore = transaction.objectStore(DbStore.Sessions);
+        if (db.objectStoreNames.contains(LEGACY_SESSIONS_STORE)) {
+            const sessionsStore = transaction.objectStore(LEGACY_SESSIONS_STORE);
 
             const sessionsRequest = sessionsStore.getAll();
 
