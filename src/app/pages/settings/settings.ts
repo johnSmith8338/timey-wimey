@@ -5,6 +5,7 @@ import { SetAlarmDuration } from "./set-alarm-duration/set-alarm-duration";
 import { SetAlarmSort } from "./set-alarm-sort/set-alarm-sort";
 import { SetWakelock } from "./set-wakelock/set-wakelock";
 import { SetTheme } from "./set-theme/set-theme";
+import { SetAppReset } from "./set-app-reset/set-app-reset";
 
 @Component({
   selector: 'app-settings',
@@ -13,7 +14,8 @@ import { SetTheme } from "./set-theme/set-theme";
     SetAlarmDuration,
     SetAlarmSort,
     SetWakelock,
-    SetTheme
+    SetTheme,
+    SetAppReset
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',

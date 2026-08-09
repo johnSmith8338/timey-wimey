@@ -1,0 +1,13 @@
+<h3>danger zone</h3>
+<button type="button" class="danger" (click)="openConfirm()">reset app</button>
+<small>
+    removes alarms, timers, stopwatch history and application settings. the app will behave as if it was opened for the fisrt time.
+</small>
+
+@if (confirmOpen()) {
+    <app-confirm-dialog
+        title="reset application?"
+        message="this will permanently delete all alarms, timers, history and settings."
+        (confirm)="confirmReset()"
+        (cancel)="closeConfirm()" />
+}

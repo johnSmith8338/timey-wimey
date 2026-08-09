@@ -17,3 +17,6 @@
 <button (click)="exportBackup()">export json</button>
 <input #file hidden type="file" accept=".json" (change)="importBackup($event)">
 <button (click)="file.click()">import json</button>
+
+<h3>reset APP</h3>
+<app-set-app-reset />

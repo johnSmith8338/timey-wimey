@@ -17,10 +17,6 @@ export class SettingsSvc {
   readonly alarmAutoStopMinutes = computed(() => this.settings().alarmAutoStopMinutes);
   readonly firstRunCompleted = computed(() => this.settings().firstRunCompleted);
 
-  // constructor() {
-  //   void this.load();
-  // }
-
   async load() {
     this.settings.set(await this.repo.load());
   }
@@ -79,6 +75,12 @@ export class SettingsSvc {
       firstRunCompleted: true
     }))
     await this.repo.save(this.settings());
+  }
+
+  async reset(): Promise<void> {
+    const settings = structuredClone(DEFAULT_SETTINGS);
+    this.settings.set(settings);
+    await this.repo.save(settings);
   }
 
   async restore(settings: AppSettings) {

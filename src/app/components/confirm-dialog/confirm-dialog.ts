@@ -8,7 +8,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmDialog {
-  title = input('delete preset&');
+  title = input('delete?');
   message = input('action cannot be undone');
   confirm = output();
   cancel = output();
