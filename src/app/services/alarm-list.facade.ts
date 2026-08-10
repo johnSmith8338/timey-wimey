@@ -95,7 +95,9 @@ export class AlarmListFacade {
         await this.alarmSvc.createGroup();
     }
 
-    async renameGroup(group: AlarmGroup, title: string) {
+    async renameGroup(view: AlarmGroupView, title: string) {
+        const group = this.alarmSvc.getGroup(view.id);
+        if (!group) return;
         await this.alarmSvc.renameGroup(group, title);
     }
 

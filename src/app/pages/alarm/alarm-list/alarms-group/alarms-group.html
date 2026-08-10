@@ -2,10 +2,18 @@
     <header>
         @if (!group().system) {
             <button (click)="facade.toggleGroup(group())">{{group().expanded?'close':'open'}}</button>
-            <span>{{group().title}}</span>
+            @if (editing()) {
+                <input #titleInput type="text"
+                [value]="group().title"
+                (keydown.enter)="saveTitle(titleInput.value)"
+                (keydown.escape)="cancelRename()"
+                (blur)="saveTitle(titleInput.value)" />
+            }@else {
+                <span>{{group().title}}</span>
+                <button (click)="startRename()">rename</button>
+            }
             <button (click)="facade.requestDeleteGroup(group())">delete</button>
         }
-        <span>{{group().title}}</span>
     </header>
     @if (group().expanded) {
         <div cdkDropList
