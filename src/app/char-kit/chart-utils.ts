@@ -144,24 +144,84 @@ export function buildDonut(slices: ChartPoint[]): DonutArc[] {
     });
 }
 
+function polarToCartesian(
+    cx: number,
+    cy: number,
+    radius: number,
+    angle: number
+) {
+    return {
+        x: cx + radius * Math.cos(angle),
+        y: cy + radius * Math.sin(angle)
+    };
+}
+
 export function buildArcPath(
     cx: number,
     cy: number,
     radius: number,
-    start: number,
-    end: number
+    startAngle: number,
+    endAngle: number
 ): string {
-    const p1 = polarToCartession(cx, cy, radius, start);
-    const p2 = polarToCartession(cx, cy, radius, end);
-    const large = end - start > Math.PI ? 1 : 0;
+    const fullCircle = Math.PI * 2;
+    const sweep = endAngle - startAngle;
+
+    // Нулевая дуга.
+    // Важно явно вернуть корректный SVG path,
+    // а не отдавать SVG совпадающие точки для A.
+    if (sweep <= 0.00001) {
+        const point = polarToCartesian(
+            cx,
+            cy,
+            radius,
+            startAngle
+        );
+
+        return `M ${point.x} ${point.y}`;
+    }
+
+    // Полный круг SVG одной A-командой нормально
+    // не рисует, поэтому разбиваем его на две половины.
+    if (sweep >= fullCircle - 0.0001) {
+        const start = polarToCartesian(
+            cx,
+            cy,
+            radius,
+            startAngle
+        );
+
+        const middle = polarToCartesian(
+            cx,
+            cy,
+            radius,
+            startAngle + Math.PI
+        );
+
+        return `
+      M ${start.x} ${start.y}
+      A ${radius} ${radius} 0 1 1 ${middle.x} ${middle.y}
+      A ${radius} ${radius} 0 1 1 ${start.x} ${start.y}
+    `;
+    }
+
+    const start = polarToCartesian(
+        cx,
+        cy,
+        radius,
+        startAngle
+    );
+
+    const end = polarToCartesian(
+        cx,
+        cy,
+        radius,
+        endAngle
+    );
+
+    const largeArcFlag = sweep > Math.PI ? 1 : 0;
 
     return `
-    M ${p1.x} ${p1.y}
-    A ${radius} ${radius}
-    0
-    ${large}
-    1
-    ${p2.x}
-    ${p2.y}
-    `;
+    M ${start.x} ${start.y}
+    A ${radius} ${radius} 0 ${largeArcFlag} 1 ${end.x} ${end.y}
+  `;
 }

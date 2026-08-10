@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, effect, input, signal, untracked } from '@angular/core';
-import { ChartPoint } from '../chart-point';
+import { ChartPoint, DonutArc } from '../chart-point';
 import { buildArcPath, buildDonut } from '../chart-utils';
 import { animate, lerp } from '../chart-animation';
 import { PercentPipe } from '@angular/common';
@@ -28,6 +28,7 @@ export class DonutChart extends ChartBase {
   readonly totalScale = signal(1);
   readonly hovered = signal<string | null>(null);
   readonly hoverProgress = signal(0);
+  protected readonly initialized = signal(false);
 
   readonly viewBox = computed(() => {
     const p = this.padding();
@@ -60,48 +61,104 @@ export class DonutChart extends ChartBase {
   constructor() {
     super();
 
-    effect(() => {
-      morphArcs(
-        this.renderArcs(),
-        this.arcs(),
-        arcs => this.renderArcs.set(arcs),
-        this.duration()
-      )
-    })
-
+    /**
+     * Donut geometry.
+     *
+     * First render:
+     *   start = end
+     *   => every arc has zero length.
+     *
+     * After the browser has painted that state:
+     *   initialized = true
+     *   => morph from zero-length arcs to real arcs.
+     */
     effect(() => {
       const arcs = this.arcs();
-      if (!arcs.length) return;
 
-      this.visibleCount.set(0);
+      if (!arcs.length) {
+        this.renderArcs.set([]);
+        this.visibleCount.set(0);
 
-      let i = 0;
+        this.currentAnimatedValue = 0;
+        this.animatedTotal.set(0);
 
-      const next = () => {
-        this.visibleCount.set(++i);
+        return;
+      }
 
-        if (i < arcs.length) {
-          setTimeout(next, 180);
-        }
-      };
+      if (!this.initialized()) {
+        // Initial visual state: all arcs have zero length.
+        this.renderArcs.set(
+          this.toZeroMorphArcs(arcs)
+        );
 
-      setTimeout(next, 100);
+        // Elements already exist in the DOM.
+        this.visibleCount.set(arcs.length);
+
+        // Center starts from zero too.
+        this.currentAnimatedValue = 0;
+        this.animatedTotal.set(0);
+
+        this.totalScale.set(1);
+
+        /**
+         * One RAF waits for the current rendering cycle.
+         * The second RAF guarantees that the zero-state has
+         * actually made it through a browser paint opportunity.
+         */
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            this.initialized.set(true);
+          });
+        });
+
+        return;
+      }
+
+      // Normal subsequent updates.
+      morphArcs(
+        this.renderArcs(),
+        arcs,
+        next => this.renderArcs.set(next),
+        this.duration()
+      );
     });
 
+    /**
+     * Center number animation.
+     *
+     * On first render the number stays at 0.
+     * After initialization it morphs to the real total.
+     */
     effect(() => {
+      const value = this.centerValue();
+
+      if (!this.initialized()) {
+        return;
+      }
+
       morphNumber(
         this.currentAnimatedValue,
-        this.centerValue(),
-        value => {
-          this.currentAnimatedValue = value;
-          untracked(() => this.animatedTotal.set(value))
+        value,
+        nextValue => {
+          this.currentAnimatedValue = nextValue;
+
+          untracked(() => {
+            this.animatedTotal.set(nextValue);
+          });
         },
         this.duration()
-      )
-    })
+      );
+    });
 
+    /**
+     * Center number "pop" animation when selected value changes.
+     */
     effect(() => {
       this.centerValue();
+
+      if (!this.initialized()) {
+        return;
+      }
 
       this.totalScale.set(1.08);
 
@@ -111,16 +168,26 @@ export class DonutChart extends ChartBase {
     });
   }
 
-  buildPath(arc: MorphArc) {
-    const active = this.hovered() === arc.label;
-    const offset = active ? this.hoverProgress() * 4 : 0;
-    const middle = (arc.currentStart + arc.currentEnd) / 2;
-    const dx = Math.cos(middle) * offset;
-    const dy = Math.sin(middle) * offset;
+  private toZeroMorphArcs(arcs: DonutArc[]): MorphArc[] {
+    return arcs.map(arc => ({
+      ...arc,
+      currentStart: arc.startAngle,
+      currentEnd: arc.startAngle
+    }));
+  }
 
+  private toMorphArcs(arcs: DonutArc[]): MorphArc[] {
+    return arcs.map(arc => ({
+      ...arc,
+      currentStart: arc.startAngle,
+      currentEnd: arc.endAngle
+    }));
+  }
+
+  buildPath(arc: MorphArc) {
     return buildArcPath(
-      this.size() / 2 + dx,
-      this.size() / 2 + dy,
+      this.size() / 2,
+      this.size() / 2,
       this.radius(),
       arc.currentStart,
       arc.currentEnd

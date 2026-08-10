@@ -62,7 +62,22 @@ export function morphArcs(
     update: (arcs: MorphArc[]) => void,
     duration = 600
 ) {
+    if (!target.length) {
+        update([]);
+        return;
+    }
+
+    if (!current.length) {
+        update(target.map(arc => ({
+            ...arc,
+            currentStart: arc.startAngle,
+            currentEnd: arc.endAngle
+        })))
+        return;
+    }
+
     const previous = structuredClone(current);
+
     animate(duration, progress => {
         update(
             target.map((arc, index) => {

@@ -1,4 +1,4 @@
-import { Directive, input } from "@angular/core";
+import { Directive, input, signal } from "@angular/core";
 import { DEFAULT_CHART_OPTIONS } from "./chart-config";
 
 @Directive()
