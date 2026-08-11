@@ -15,7 +15,21 @@
         <app-donut-chart [slices]="facade.usageDistribution()" [size]="180" />
     </div>
     <div class="card">
-        <h3>hour of day</h3>
+        <div class="activity-header">
+            <h3>hour of day</h3>
+            <div class="activity-date">
+                <button type="button" (click)="facade.previousActivityDay()" aria-label="previous day">
+                    <span>←</span>
+                </button>
+                <span>{{facade.activityDateLabel()}}</span>
+                <button type="button" 
+                    (click)="facade.nextActivityDay()" 
+                    [disabled]="!facade.canGoNextActivityDate()" 
+                    aria-label="next day">
+                    <span>→</span>
+                </button>
+            </div>
+        </div>
         <app-bar-chart [points]="facade.hourDistribution()" [style.height.px]="180" />
     </div>
     <div class="card">

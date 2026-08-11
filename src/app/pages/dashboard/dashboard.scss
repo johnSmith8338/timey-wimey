@@ -72,3 +72,44 @@
   width: 100%;
   display: flex;
 }
+
+.activity-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.activity-date {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+
+  font-size: .8rem;
+  color: var(--text-secondary);
+}
+
+.activity-date button {
+  inline-size: 28px;
+  block-size: 28px;
+
+  display: grid;
+  place-items: center;
+
+  border: 0;
+  border-radius: 6px;
+
+  background: transparent;
+  color: inherit;
+
+  cursor: pointer;
+}
+
+.activity-date button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, .08);
+}
+
+.activity-date button:disabled {
+  opacity: .25;
+  cursor: default;
+}

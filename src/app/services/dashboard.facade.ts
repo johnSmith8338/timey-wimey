@@ -1,4 +1,4 @@
-import { computed, inject, Injectable } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { AlarmHistorySvc } from "./alarm-history-svc";
 import { TimerHistorySvc } from "./timer-history-svc";
 import { StopwatchHistorySvc } from "./stopwatch-history-svc";
@@ -16,6 +16,8 @@ export class DashboardFacade {
     private readonly alarmHistory = inject(AlarmHistorySvc);
     private readonly timerHistory = inject(TimerHistorySvc);
     private readonly stopwatchHistory = inject(StopwatchHistorySvc);
+
+    readonly activityDate = signal(this.startOfDay(Date.now()));
 
     readonly alarms = computed(() => this.alarmHistory.history());
     readonly timers = computed(() => this.timerHistory.history());
@@ -205,9 +207,28 @@ export class DashboardFacade {
         }
     ])
 
+    readonly activityDateLabel = computed(() => {
+        const date = new Date(this.activityDate());
+
+        return new Intl.DateTimeFormat('en-En', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        }).format(date);
+    })
+
+    readonly canGoNextActivityDate = computed(() => {
+        return this.activityDate() < this.startOfDay(Date.now());
+    })
+
     readonly hourDistribution = computed<ChartPoint[]>(() => {
+        const selectedDay = this.activityDate();
+        const start = selectedDay;
+        const end = this.addDays(selectedDay, 1);
+
         const buckets = Array(24).fill(0);
         const add = (time: number) => {
+            if (time < start || time >= end) return;
             buckets[new Date(time).getHours()]++;
         }
 
@@ -332,5 +353,31 @@ export class DashboardFacade {
                 count,
                 percent: Math.round(count / total * 100)
             }))
+    }
+
+    private startOfDay(timestamp: number): number {
+        const date = new Date(timestamp);
+        date.setHours(0, 0, 0, 0);
+        return date.getTime();
+    }
+
+    private addDays(timestamp: number, days: number) {
+        const date = new Date(timestamp);
+        date.setDate(date.getDate() + days);
+        return date.getTime();
+    }
+
+    previousActivityDay() {
+        this.activityDate.update(date =>
+            this.addDays(date, -1)
+        )
+    }
+
+    nextActivityDay() {
+        const today = this.startOfDay(Date.now());
+        this.activityDate.update(date => {
+            const next = this.addDays(date, 1);
+            return Math.min(next, today);
+        })
     }
 }
