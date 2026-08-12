@@ -6,6 +6,7 @@ import { SetAlarmSort } from "./set-alarm-sort/set-alarm-sort";
 import { SetWakelock } from "./set-wakelock/set-wakelock";
 import { SetTheme } from "./set-theme/set-theme";
 import { SetAppReset } from "./set-app-reset/set-app-reset";
+import { SetNotifications } from "./set-notifications/set-notifications";
 
 @Component({
   selector: 'app-settings',
@@ -15,7 +16,8 @@ import { SetAppReset } from "./set-app-reset/set-app-reset";
     SetAlarmSort,
     SetWakelock,
     SetTheme,
-    SetAppReset
+    SetAppReset,
+    SetNotifications
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',

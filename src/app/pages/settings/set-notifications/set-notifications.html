@@ -1,0 +1,22 @@
+<div class="notifications">
+    @if (!supported) {
+        <p class="muted">notifications are not supported by this browser</p>
+    }@else if (permission()==='denied') {
+        <p class="warning">notifications are blocked by your browser.</p>
+        <p>enable them in the browser site settings.</p>
+        <button type="button" (click)="enable()">enable notifications</button>
+    }@else if (permission()==='default') {
+        <p>allow notifications to receive alarm alerts.</p>
+        <button type="button" (click)="enable()">enable notifications</button>
+    }@else {
+        <app-toggle [checked]="enabled()" (checkedChange)="toggle($event)">
+            <span left>off</span>
+            <span right>on</span>
+        </app-toggle>
+        @if (enabled()) {
+            <small>notifications are enabled</small>
+        }@else {
+            <small>notifications are disabled</small>
+        }
+    }
+</div>

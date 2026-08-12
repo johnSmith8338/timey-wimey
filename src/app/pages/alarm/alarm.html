@@ -29,3 +29,11 @@
         (confirm)="facade.confirmDeleteGroup()"
         (cancel)="facade.cancelDeleteGroup()" />
 }
+
+@if (facade.notificationPrompt()) {
+    <app-confirm-dialog
+        title="enable notifications?"
+        message="allow notifications to receive alarm alerts."
+        (confirm)="facade.confirmNotificationPrompt()"
+        (cancel)="facade.cancelNotificationPrompt()" />
+}

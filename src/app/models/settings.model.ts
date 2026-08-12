@@ -13,4 +13,6 @@ export interface AppSettings {
     alarmSortMode: AlarmSortMode;
     alarmAutoStopMinutes: AlarmAutoStopMinutes;
     firstRunCompleted: boolean;
+    notificationsEnabled: boolean;
+    notificationPromptShown: boolean;
 }

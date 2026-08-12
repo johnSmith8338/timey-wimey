@@ -21,6 +21,7 @@ export class Welcome {
 
   readonly steps = signal([
     'welcome',
+    'notifications',
     'theme',
     'wake lock',
     'alarm',

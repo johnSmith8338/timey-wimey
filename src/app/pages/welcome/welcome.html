@@ -12,16 +12,19 @@
                 <app-set-theme />
             }
             @case (2) {
-                <app-set-wakelock />
+                <app-set-theme />
             }
             @case (3) {
+                <app-set-wakelock />
+            }
+            @case (4) {
                 <app-set-alarm-duration />
                 <app-set-alarm-sort />
             }
-            @case (4) {
+            @case (5) {
                 <app-set-history-remove />
             }
-            @case (5) {
+            @case (6) {
                 finish screen
             }
         }

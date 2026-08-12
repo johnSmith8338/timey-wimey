@@ -45,13 +45,15 @@ export class AlarmRingingFacade {
 
         await this.wakelock.acquire();
 
-        this.notification.show({
-            title: alarm.title,
-            body: `
-                ${alarm.hour.toString().padStart(2, '0')}:
-                ${alarm.minute.toString().padStart(2, '0')}
-                `
-        })
+        if (this.notification.canNotify(this.settings.notificationsEnabled())) {
+            this.notification.show({
+                title: alarm.title,
+                body: `
+                    ${alarm.hour.toString().padStart(2, '0')}:
+                    ${alarm.minute.toString().padStart(2, '0')}
+                    `
+            })
+        }
 
         this.soundSvc.play(alarm.sound);
 
@@ -123,11 +125,13 @@ export class AlarmRingingFacade {
     }
 
     notifyMissedAlarm(alarm: Alarm) {
+        if (!this.notification.canNotify(this.settings.notificationsEnabled())) return;
+
         this.notification.show({
             title: 'missed alarm',
             body: `${alarm.title}\n` +
-                `${alarm.hour.toString().padStart(2, '0')}:` +
-                `${alarm.minute.toString().padStart(2, '0')}`,
+                `${alarm.hour.toString().padStart(2, '0')}:
+                ${alarm.minute.toString().padStart(2, '0')}`,
             requireInteraction: false
         })
     }

@@ -13,16 +13,22 @@ export interface NotificationOptions {
   providedIn: 'root',
 })
 export class NotificationSvc {
-  permission() {
+  get supported(): boolean {
+    return 'Notification' in window;
+  }
+
+  get permission(): NotificationPermission {
+    if (!this.supported) return 'denied';
     return Notification.permission;
   }
 
-  async requestPermission() {
-    if (!('Notification' in window)) return 'denied';
+  async requestPermission(): Promise<NotificationPermission> {
+    if (!this.supported) return 'denied';
     return Notification.requestPermission();
   }
 
   show(options: NotificationOptions) {
+    if (!this.supported) return null;
     if (Notification.permission !== 'granted') return null;
 
     return new Notification(options.title, {
@@ -32,5 +38,11 @@ export class NotificationSvc {
       silent: options.silent,
       requireInteraction: options.requireInteraction
     })
+  }
+
+  canNotify(enabled: boolean): boolean {
+    return (
+      this.supported && enabled && this.permission === 'granted'
+    )
   }
 }

@@ -16,6 +16,8 @@ export class SettingsSvc {
   readonly alarmSortMode = computed(() => this.settings().alarmSortMode);
   readonly alarmAutoStopMinutes = computed(() => this.settings().alarmAutoStopMinutes);
   readonly firstRunCompleted = computed(() => this.settings().firstRunCompleted);
+  readonly notificationsEnabled = computed(() => this.settings().notificationsEnabled);
+  readonly notificationPromptShown = computed(() => this.settings().notificationPromptShown);
 
   async load() {
     this.settings.set(await this.repo.load());
@@ -73,6 +75,22 @@ export class SettingsSvc {
     this.settings.update(s => ({
       ...s,
       firstRunCompleted: true
+    }))
+    await this.repo.save(this.settings());
+  }
+
+  async setNotificationsEnabled(value: boolean) {
+    this.settings.update(s => ({
+      ...s,
+      notificationsEnabled: value
+    }))
+    await this.repo.save(this.settings());
+  }
+
+  async markNotificationsPromptShown() {
+    this.settings.update(s => ({
+      ...s,
+      notificationPromptShown: true
     }))
     await this.repo.save(this.settings());
   }

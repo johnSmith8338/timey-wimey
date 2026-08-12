@@ -10,7 +10,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
     keepScreenAwake: true,
     alarmSortMode: 'manual',
     alarmAutoStopMinutes: 2,
-    firstRunCompleted: false
+    firstRunCompleted: false,
+    notificationsEnabled: true,
+    notificationPromptShown: false,
 }
 
 @Injectable({
