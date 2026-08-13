@@ -11,25 +11,31 @@ interface AppUpdateData {
 export class UpdateSvc {
   private readonly swUpdate = inject(SwUpdate);
 
+  private readonly UPDATE_OVERLAY_DELAY = 1200;
+
   readonly updateAvailable = signal(false);
   readonly updating = signal(false);
   readonly currentVersion = signal<string | null>(null);
   readonly latestVersion = signal<string | null>(null);
 
   constructor() {
+    console.log('[update svc works - before]')
     if (!this.swUpdate.isEnabled) {
       return;
     }
+    console.log('[update svc works - after]')
 
     this.swUpdate.versionUpdates.subscribe(event => {
-      console.log('[UpdateSvc] versionUpdates:', event);
+      if (event.type === 'NO_NEW_VERSION_DETECTED') {
+        const currentVersion = this.getVersion(event.version.appData);
+        this.currentVersion.set(currentVersion);
+        return;
+      }
 
       if (event.type !== 'VERSION_READY') return;
 
       const currentVersion = this.getVersion(event.currentVersion.appData);
       const latestVersion = this.getVersion(event.latestVersion.appData);
-
-      console.log('[UpdateSvc] version ready:', currentVersion, '+', latestVersion);
 
       this.currentVersion.set(currentVersion);
       this.latestVersion.set(latestVersion);
@@ -52,7 +58,7 @@ export class UpdateSvc {
     this.updating.set(true);
 
     await new Promise<void>(resolve => {
-      requestAnimationFrame(() => resolve());
+      setTimeout(resolve, this.UPDATE_OVERLAY_DELAY);
     })
 
     window.location.reload();
@@ -82,5 +88,9 @@ export class UpdateSvc {
 
     const version = appData.version;
     return typeof version === 'string' ? version : null;
+  }
+
+  private setCurrentVersion(appData: object | undefined): void {
+    this.currentVersion.set(this.getVersion(appData));
   }
 }

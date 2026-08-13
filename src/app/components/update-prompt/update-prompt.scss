@@ -80,46 +80,8 @@
   animation: update-spin 0.8s linear infinite;
 }
 
-.progress {
-  inline-size: 100%;
-  block-size: 4px;
-
-  margin-block-start: 1.5rem;
-
-  overflow: hidden;
-
-  border-radius: 999px;
-
-  background: rgb(128 128 128 / 25%);
-}
-
-.progress-bar {
-  inline-size: 40%;
-  block-size: 100%;
-
-  border-radius: inherit;
-
-  background: currentColor;
-
-  animation: update-progress 1.5s ease-in-out infinite;
-}
-
 @keyframes update-spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes update-progress {
-  0% {
-    transform: translateX(-150%);
-  }
-
-  50% {
-    transform: translateX(150%);
-  }
-
-  100% {
-    transform: translateX(300%);
   }
 }

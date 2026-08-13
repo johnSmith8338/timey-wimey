@@ -2,6 +2,13 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
+
+console.log('[build] generating version.ts');
+
+execSync('node scripts/generate-version.mjs', {
+  stdio: 'inherit'
+});
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { UpdateSvc } from '../../../services/update-svc';
+import { AppInfoSvc } from '../../../services/app-info-svc';
 
 @Component({
   selector: 'app-set-update-check',
@@ -10,6 +11,7 @@ import { UpdateSvc } from '../../../services/update-svc';
 })
 export class SetUpdateCheck {
   readonly update = inject(UpdateSvc);
+  readonly appInfo = inject(AppInfoSvc);
 
   async checkForUpdate() {
     await this.update.check();

@@ -2,8 +2,8 @@
     @if (!updateSvc.updating()) {
         <div class="update-prompt">
             <p>new version is available</p>
-            @if (updateSvc.currentVersion()&&updateSvc.latestVersion()) {
-                <p>{{updateSvc.currentVersion()}} → {{updateSvc.latestVersion()}}</p>
+            @if (updateSvc.latestVersion(); as latestVersion) {
+                <p>{{updateSvc.currentVersion()}} → {{latestVersion}}</p>
             }
             <div class="actions">
                 <button type="button" (click)="updateSvc.update()">update</button>
@@ -15,9 +15,6 @@
             <div class="update-dialog">
                 <div class="spinner"></div>
                 <h3>updating...</h3>
-                <div class="progress">
-                    <div class="progress-bar"></div>
-                </div>
                 <small>please don't close the application</small>
             </div>
         </div>
