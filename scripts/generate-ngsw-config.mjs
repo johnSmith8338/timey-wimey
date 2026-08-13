@@ -5,24 +5,28 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
 
+const packageJsonPath = path.join(root, 'package.json');
+const sourceConfigPath = path.join(root, 'ngsw-config.json');
+const generatedConfigPath = path.join(root, 'ngsw-config.generated.json');
+
 const packageJson = JSON.parse(
-  fs.readFileSync(path.join(root, 'package.json'), 'utf8')
+    fs.readFileSync(packageJsonPath, 'utf8')
 );
 
-const configPath = path.join(root, 'ngsw-config.json');
-
 const config = JSON.parse(
-  fs.readFileSync(configPath, 'utf8')
+    fs.readFileSync(sourceConfigPath, 'utf8')
 );
 
 config.appData = {
-  ...(config.appData ?? {}),
-  version: packageJson.version
+    ...(config.appData ?? {}),
+    version: packageJson.version
 };
 
 fs.writeFileSync(
-  configPath,
-  JSON.stringify(config, null, 2) + '\n'
+    generatedConfigPath,
+    JSON.stringify(config, null, 2) + '\n'
 );
 
-console.log(`[ngsw] app version: ${packageJson.version}`);
+console.log(
+    `[ngsw] generated config for version ${packageJson.version}`
+);
