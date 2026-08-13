@@ -7,6 +7,7 @@ import { SetWakelock } from "./set-wakelock/set-wakelock";
 import { SetTheme } from "./set-theme/set-theme";
 import { SetAppReset } from "./set-app-reset/set-app-reset";
 import { SetNotifications } from "./set-notifications/set-notifications";
+import { SetUpdateCheck } from "./set-update-check/set-update-check";
 
 @Component({
   selector: 'app-settings',
@@ -17,7 +18,8 @@ import { SetNotifications } from "./set-notifications/set-notifications";
     SetWakelock,
     SetTheme,
     SetAppReset,
-    SetNotifications
+    SetNotifications,
+    SetUpdateCheck
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',

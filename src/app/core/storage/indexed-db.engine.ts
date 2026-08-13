@@ -19,9 +19,8 @@ export class IndexedDbEngine extends StorageEngine {
                 const db = request.result;
                 const transaction = request.transaction!;
 
-                if (!db.objectStoreNames.contains(DbStore.History)) {
-                    db.createObjectStore(DbStore.History);
-                }
+                // ensure all current stores exist
+                this.ensureStores(db);
 
                 if (event.oldVersion < HISTORY_MIGRATION_VERSION) {
                     this.migrateToHistory(db, transaction);
@@ -32,6 +31,24 @@ export class IndexedDbEngine extends StorageEngine {
                 }
             };
         })
+    }
+
+    private ensureStores(db: IDBDatabase): void {
+        if (!db.objectStoreNames.contains(DbStore.Settings)) {
+            db.createObjectStore(DbStore.Settings);
+        }
+
+        if (!db.objectStoreNames.contains(DbStore.Timers)) {
+            db.createObjectStore(DbStore.Timers);
+        }
+
+        if (!db.objectStoreNames.contains(DbStore.Alarms)) {
+            db.createObjectStore(DbStore.Alarms);
+        }
+
+        if (!db.objectStoreNames.contains(DbStore.History)) {
+            db.createObjectStore(DbStore.History);
+        }
     }
 
     private async getStore(store: DbStore, mode: IDBTransactionMode) {

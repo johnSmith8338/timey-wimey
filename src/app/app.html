@@ -1,10 +1,14 @@
-<header>
-    @if (hasHeader()) {
-        <app-header />
-    }
-</header>
-<main>
-    <router-outlet />
-</main>
-<footer></footer>
+<div [attr.inert]="updateSvc.updating()?'':null">
+    <header>
+        @if (hasHeader()) {
+            <app-header />
+        }
+    </header>
+    <main>
+        <router-outlet />
+    </main>
+    <footer></footer>
+</div>
+
+<app-update-prompt />
 
