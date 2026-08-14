@@ -1,0 +1,12 @@
+@if (installSvc.installAvailable() && !installSvc.installed()) {
+    <div class="install-overlay">
+        <div class="install-dialog">
+            <h3>install timey-wimey</h3>
+            <p>install the app for quick access and offline use.</p>
+            <div class="actions">
+                <button type="button" (click)="installSvc.install()">install</button>
+                <button type="button" (click)="installSvc.postpone()">later</button>
+            </div>
+        </div>
+    </div>
+}

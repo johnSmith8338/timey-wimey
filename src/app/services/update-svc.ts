@@ -19,11 +19,9 @@ export class UpdateSvc {
   readonly latestVersion = signal<string | null>(null);
 
   constructor() {
-    console.log('[update svc works - before]')
     if (!this.swUpdate.isEnabled) {
       return;
     }
-    console.log('[update svc works - after]')
 
     this.swUpdate.versionUpdates.subscribe(event => {
       if (event.type === 'NO_NEW_VERSION_DETECTED') {

@@ -8,6 +8,7 @@ import { SetTheme } from "./set-theme/set-theme";
 import { SetAppReset } from "./set-app-reset/set-app-reset";
 import { SetNotifications } from "./set-notifications/set-notifications";
 import { SetUpdateCheck } from "./set-update-check/set-update-check";
+import { SetAppInstallPrompt } from "./set-app-install-prompt/set-app-install-prompt";
 
 @Component({
   selector: 'app-settings',
@@ -19,7 +20,8 @@ import { SetUpdateCheck } from "./set-update-check/set-update-check";
     SetTheme,
     SetAppReset,
     SetNotifications,
-    SetUpdateCheck
+    SetUpdateCheck,
+    SetAppInstallPrompt
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',

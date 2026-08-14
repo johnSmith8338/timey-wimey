@@ -5,13 +5,15 @@ import { filter } from 'rxjs';
 import { AppInitializerSvc } from './services/app-initializer-svc';
 import { UpdatePrompt } from "./components/update-prompt/update-prompt";
 import { UpdateSvc } from './services/update-svc';
+import { InstallPrompt } from "./components/install-prompt/install-prompt";
 
 @Component({
   selector: 'app-root',
   imports: [
     RouterOutlet,
     Header,
-    UpdatePrompt
+    UpdatePrompt,
+    InstallPrompt
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
