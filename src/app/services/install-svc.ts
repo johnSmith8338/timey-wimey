@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -21,6 +21,10 @@ export class InstallSvc {
   readonly installAvailable = signal(false);
   readonly installPromptVisible = signal(false);
   readonly installed = signal(this.isStandalone());
+  readonly ios = signal(this.isIos());
+  readonly iosSafari = signal(this.isIosSafari());
+
+  readonly showIosInstructions = computed(() => this.iosSafari() && !this.installed());
 
   constructor() {
     window.addEventListener('beforeinstallprompt', this.onBeforeInstallPrompt);
@@ -82,6 +86,34 @@ export class InstallSvc {
       window.matchMedia('(display-mode:standalone)').matches ||
       ('standalone' in navigator && (navigator as Navigator & { standalone?: boolean }).standalone === true)
     )
+  }
+
+  private isIos(): boolean {
+    const ua = window.navigator.userAgent;
+    return (
+      /iPhone|iPad|iPod/i.test(ua) ||
+      (
+        navigator.platform === 'MacIntel' &&
+        navigator.maxTouchPoints > 1
+      )
+    )
+  }
+
+  private isIosSafari(): boolean {
+    const ua = navigator.userAgent;
+
+    const ios =
+      /iPhone|iPad|iPod/i.test(ua) ||
+      (
+        navigator.platform === 'MacIntel' &&
+        navigator.maxTouchPoints > 1
+      );
+
+    const safari =
+      /Safari/i.test(ua) &&
+      !/CriOS|FxiOS|EdgiOS|OPiOS/i.test(ua);
+
+    return ios && safari;
   }
 
   private isInstallPostponed(): boolean {

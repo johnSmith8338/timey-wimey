@@ -1,6 +1,10 @@
-@if (installSvc.installAvailable() && !installSvc.installed()) {
-    <p>application</p>
-    <button type="button" (click)="installSvc.install()">install app</button>
-}@else {
-    <p>you have latest version</p>
+@if (!installSvc.installed()) {
+    @if (installSvc.installAvailable()) {
+        <p>application</p>
+        <button type="button" (click)="installSvc.install()">install app</button>
+    }
+    @if (installSvc.showIosInstructions()) {
+        <p>application</p>
+        <button type="button" (click)="iosInstallPrompt.set(true)">how to install</button>
+    }
 }

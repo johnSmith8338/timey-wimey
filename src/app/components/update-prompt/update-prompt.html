@@ -1,22 +1,40 @@
+@if (updateSvc.checking()) {
+    <div class="update-status">
+        <span>checking for updates...</span>
+    </div>
+}
 @if (updateSvc.updateAvailable()) {
-    @if (!updateSvc.updating()) {
-        <div class="update-prompt">
-            <p>new version is available</p>
-            @if (updateSvc.latestVersion(); as latestVersion) {
-                <p>{{updateSvc.currentVersion()}} → {{latestVersion}}</p>
-            }
-            <div class="actions">
-                <button type="button" (click)="updateSvc.update()">update</button>
-                <button type="button" (click)="updateSvc.postpone()">later</button>
-            </div>
+    <div class="update-prompt">
+        <p>new version is available</p>
+        @if (updateSvc.currentVersion() && updateSvc.latestVersion()) {
+            <p>{{updateSvc.currentVersion()}} → {{updateSvc.latestVersion()}}</p>
+        }
+        <div class="actions">
+            <button type="button" (click)="updateSvc.update()">update</button>
+            <button type="button" (click)="updateSvc.postpone()">later</button>
         </div>
-    }@else {
-        <div class="update-overlay">
-            <div class="update-dialog">
-                <div class="spinner"></div>
-                <h3>updating...</h3>
-                <small>please don't close the application</small>
-            </div>
+    </div>
+}
+@if (updateSvc.updating()) {
+    <div class="update-overlay">
+        <div class="update-dialog">
+            <div class="spinner"></div>
+            <h3>updating...</h3>
+            <p>preparing the new version...</p>
+            <small>please don't close the application</small>
         </div>
-    }
+    </div>
+}
+@if (updateSvc.updateError()) {
+    <div class="update-error">
+        <p>{{updateSvc.errorMessage()}}</p>
+        <button type="button" (click)="updateSvc.check()">try again</button>
+    </div>
+}
+@if (updateSvc.unrecoverable()) {
+    <div class="update-error">
+        <h3>update failed</h3>
+        <p>{{updateSvc.errorMessage()}}</p>
+        <button type="button" (click)="reload()">reload app</button>
+    </div>
 }

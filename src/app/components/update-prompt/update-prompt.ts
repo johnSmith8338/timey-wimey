@@ -10,4 +10,8 @@ import { UpdateSvc } from '../../services/update-svc';
 })
 export class UpdatePrompt {
   readonly updateSvc = inject(UpdateSvc);
+
+  reload() {
+    window.location.reload();
+  }
 }

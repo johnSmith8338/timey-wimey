@@ -1,3 +1,37 @@
 :host {
     display: block;
 }
+
+.toast {
+    position: fixed;
+    inset-inline: 50%;
+    inset-block-end: 24px;
+    z-index: 10000;
+
+    translate: -50% 0;
+
+    padding: 12px 18px;
+    border-radius: 12px;
+
+    background: var(--surface-dark, #222);
+    color: var(--text-on-dark, #fff);
+
+    box-shadow: 0 8px 30px rgb(0 0 0 / 20%);
+
+    font-size: 14px;
+    white-space: nowrap;
+
+    animation: toast-in 180ms ease-out;
+}
+
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        translate: -50% 8px;
+    }
+
+    to {
+        opacity: 1;
+        translate: -50% 0;
+    }
+}

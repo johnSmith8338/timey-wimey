@@ -1,0 +1,26 @@
+@if (opened()) {
+    <div class="ios-install-overlay" (click)="close()">
+        <div class="ios-install-dialog" (click)="$event.stopPropagation()">
+            <button type="button" class="close" aria-label="Close" (click)="close()">×</button>
+            <h2>Install Timey Wimey</h2>
+            <p>iOS does not provide an install button for web apps.</p>
+            <ol>
+                <li>
+                    Open this page in <strong>Safari</strong>.
+                </li>
+                <li>
+                    Tap the <strong>Share</strong> button
+                    <span aria-hidden="true">□↑</span>.
+                </li>
+                <li>
+                    Scroll down and tap
+                    <strong>Add to Home Screen</strong>.
+                </li>
+                <li>
+                    Tap <strong>Add</strong>.
+                </li>
+            </ol>
+            <button type="button" (click)="close()">got it</button>
+        </div>
+    </div>
+}

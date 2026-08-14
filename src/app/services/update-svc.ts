@@ -1,9 +1,12 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, isDevMode, signal } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
+import { from } from 'rxjs';
 
 interface AppUpdateData {
   version: string;
 }
+
+type UpdateState = 'idle' | 'checking' | 'ready' | 'updating' | 'unrecoverable' | 'error';
 
 @Injectable({
   providedIn: 'root',
@@ -12,11 +15,18 @@ export class UpdateSvc {
   private readonly swUpdate = inject(SwUpdate);
 
   private readonly UPDATE_OVERLAY_DELAY = 1200;
+  private readonly UPDATE_PENDING_KEY = 'timey-wimey:update-applied';
 
-  readonly updateAvailable = signal(false);
-  readonly updating = signal(false);
+  readonly state = signal<UpdateState>('idle');
   readonly currentVersion = signal<string | null>(null);
   readonly latestVersion = signal<string | null>(null);
+  readonly errorMessage = signal<string | null>(null);
+
+  readonly updateAvailable = computed(() => this.state() === 'ready');
+  readonly checking = computed(() => this.state() === 'checking');
+  readonly updating = computed(() => this.state() === 'updating');
+  readonly unrecoverable = computed(() => this.state() === 'unrecoverable');
+  readonly updateError = computed(() => this.state() === 'error');
 
   constructor() {
     if (!this.swUpdate.isEnabled) {
@@ -24,46 +34,31 @@ export class UpdateSvc {
     }
 
     this.swUpdate.versionUpdates.subscribe(event => {
-      if (event.type === 'NO_NEW_VERSION_DETECTED') {
-        const currentVersion = this.getVersion(event.version.appData);
-        this.currentVersion.set(currentVersion);
-        return;
-      }
-
       if (event.type !== 'VERSION_READY') return;
 
-      const currentVersion = this.getVersion(event.currentVersion.appData);
-      const latestVersion = this.getVersion(event.latestVersion.appData);
+      const currentVersion =
+        this.getVersion(event.currentVersion.appData);
+
+      const latestVersion =
+        this.getVersion(event.latestVersion.appData);
 
       this.currentVersion.set(currentVersion);
       this.latestVersion.set(latestVersion);
-      this.updateAvailable.set(true);
+      this.state.set('ready');
     });
 
     this.swUpdate.unrecoverable.subscribe(event => {
-      console.error(
+      this.errorMessage.set(
+        'The application could not be updated safely. Please reload the page.'
+      );
+
+      this.state.set('unrecoverable');
+
+      this.logError(
         '[UpdateSvc] Unrecoverable service worker state:',
         event.reason
       );
     });
-  }
-
-  async update(): Promise<void> {
-    if (!this.updateAvailable()) {
-      return;
-    }
-
-    this.updating.set(true);
-
-    await new Promise<void>(resolve => {
-      setTimeout(resolve, this.UPDATE_OVERLAY_DELAY);
-    })
-
-    window.location.reload();
-  }
-
-  postpone(): void {
-    this.updateAvailable.set(false);
   }
 
   async check(): Promise<void> {
@@ -71,13 +66,88 @@ export class UpdateSvc {
       return;
     }
 
+    if (this.state() === 'checking' ||
+      this.state() === 'updating') {
+      return;
+    }
+
+    this.state.set('checking');
+    this.errorMessage.set(null);
+
     try {
-      const result = await this.swUpdate.checkForUpdate();
+      const updateFound = await this.swUpdate.checkForUpdate();
+
+      if (!updateFound && this.state() === 'checking') {
+        this.state.set('idle');
+      }
     } catch (error) {
-      console.error(
+      this.state.set('error');
+
+      this.errorMessage.set(
+        'Could not check for updates. Please try again later.'
+      );
+
+      this.logError(
         '[UpdateSvc] Failed to check for update:',
         error
       );
+    }
+  }
+
+  async update(): Promise<void> {
+    if (!this.updateAvailable()) {
+      return;
+    }
+
+    this.state.set('updating');
+
+    localStorage.setItem(
+      this.UPDATE_PENDING_KEY,
+      JSON.stringify({
+        from: this.currentVersion(),
+        to: this.latestVersion(),
+        timestamp: Date.now()
+      })
+    )
+
+    await new Promise<void>(resolve => {
+      setTimeout(resolve, this.UPDATE_OVERLAY_DELAY);
+    });
+
+    window.location.reload();
+  }
+
+  postpone(): void {
+    if (this.updateAvailable()) {
+      this.state.set('idle');
+    }
+  }
+
+  consumeUpdateApplied():
+    | { from: string | null; to: string | null }
+    | null {
+    const raw = localStorage.getItem(this.UPDATE_PENDING_KEY);
+
+    if (!raw) {
+      return null;
+    }
+
+    localStorage.removeItem(this.UPDATE_PENDING_KEY);
+
+    try {
+      const data = JSON.parse(raw);
+
+      return {
+        from: typeof data.from === 'string'
+          ? data.from
+          : null,
+
+        to: typeof data.to === 'string'
+          ? data.to
+          : null
+      };
+    } catch {
+      return null;
     }
   }
 
@@ -88,7 +158,11 @@ export class UpdateSvc {
     return typeof version === 'string' ? version : null;
   }
 
-  private setCurrentVersion(appData: object | undefined): void {
-    this.currentVersion.set(this.getVersion(appData));
+  private logError(...args: unknown[]): void {
+    if (!isDevMode()) {
+      return;
+    }
+
+    console.error(...args);
   }
 }

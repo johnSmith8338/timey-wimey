@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { InstallSvc } from '../../../services/install-svc';
 
 @Component({
@@ -10,4 +10,6 @@ import { InstallSvc } from '../../../services/install-svc';
 })
 export class SetAppInstallPrompt {
   readonly installSvc = inject(InstallSvc);
+
+  readonly iosInstallPrompt = signal(false);
 }
