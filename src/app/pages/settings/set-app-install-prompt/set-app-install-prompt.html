@@ -1,4 +1,6 @@
 @if (installSvc.installAvailable() && !installSvc.installed()) {
     <p>application</p>
     <button type="button" (click)="installSvc.install()">install app</button>
+}@else {
+    <p>you have latest version</p>
 }
