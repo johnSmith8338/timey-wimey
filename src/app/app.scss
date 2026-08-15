@@ -4,17 +4,15 @@
 
 .toast {
     position: fixed;
-    inset-inline: 50%;
+    inset-inline-start: 50%;
     inset-block-end: 24px;
     z-index: 10000;
-
     translate: -50% 0;
-
     padding: 12px 18px;
     border-radius: 12px;
 
-    background: var(--surface-dark, #222);
-    color: var(--text-on-dark, #fff);
+    background: #222;
+    color: #fff;
 
     box-shadow: 0 8px 30px rgb(0 0 0 / 20%);
 
