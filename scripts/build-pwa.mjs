@@ -37,7 +37,9 @@ try {
         'ng',
         'build',
         '--configuration',
-        'production'
+        'production',
+        '--base-href',
+        '/timey-wimey/'
     ]);
 } finally {
     if (fs.existsSync(generatedConfigPath)) {
