@@ -1,0 +1,98 @@
+<section class="about">
+    <header class="hero">
+        <div class="hero-icon">⏱</div>
+        <div class="hero-content">
+            <h2>Timey-Wimey</h2>
+            <p>A simple offline-first time companion for timers, alarms and stopwatches.</p>
+        </div>
+    </header>
+    <section class="features">
+        <h2>what it can do</h2>
+        <div class="feature-grid">
+            @for (feature of features; track feature.title) {
+                <article class="feature">
+                    <span>{{feature.icon}}</span>
+                    <div>
+                        <h3>{{feature.title}}</h3>
+                        <p>{{feature.description}}</p>
+                    </div>
+                </article>
+            }
+        </div>
+    </section>
+    <section class="info-card">
+        <div class="section-heading">
+            <span class="section-icon" aria-hidden="true">📴</span>
+            <div>
+                <h2>works offline</h2>
+                <p>Your data stays on this device.</p>
+            </div>
+        </div>
+        <p>Timey-Wimey is designed to keep working even when there is no internet connection.</p>
+        <p class="muted">Timers, alarms, presets and history are stored locally in IndexedDB.</p>
+    </section>
+    <section class="info-card">
+        <div class="section-heading">
+            <span class="section-icon" aria-hidden="true">📱</span>
+            <div>
+                <h2>App installation</h2>
+                @if (installSvc.installed()) {
+                    <p>Timey-Wimey is installed on this device.</p>
+                }@else if (installSvc.installAvailable()) {
+                    <p>Install Timey-Wimey for a more app-like experience.</p>
+                }@else {
+                    <p>Install availability depends on your browser.</p>
+                }
+            </div>
+        </div>
+        @if (installSvc.installed()) {
+            <div class="status">
+                <span class="status-dot"></span>
+                <span>installed</span>
+            </div>
+        }@else if (installSvc.installAvailable()) {
+            <button type="button" (click)="install()">install app</button>
+        }@else {
+            <p class="muted">If your browser doesn't offer installation automatically, check its install or "Add to Home Screen" option.</p>
+        }
+    </section>
+    <section class="info-card">
+        <div class="section-heading">
+            <span class="section-icon" aria-hidden="true">🔄</span>
+            <div>
+                <h2>application</h2>
+                <p>current application status</p>
+            </div>
+        </div>
+        <dl class="details">
+            <div>
+                <dt>version</dt>
+                <dd>{{appVersion}}</dd>
+            </div>
+            <div>
+                <dt>updates</dt>
+                <dd>
+                    @if (updateSvc.checking()) {
+                        checking...
+                    }@else if (updateSvc.updating()) {
+                        updating...
+                    }@else if (updateSvc.updateAvailable()) {
+                        update available
+                    }@else if (updateSvc.unrecoverable()) {
+                        attention required
+                    }@else if (updateSvc.updateError()) {
+                        check failed
+                    }@else {
+                        up to date
+                    }
+                </dd>
+            </div>
+        </dl>
+    </section>
+    <footer class="footer">
+        <span>Timey-Wimey</span>
+        <span>·</span>
+        <span>Made for keeping track of time.</span>
+        <a [href]="repositoryUrl" target="_blank" rel="noopener norefferer">repository</a>
+    </footer>
+</section>

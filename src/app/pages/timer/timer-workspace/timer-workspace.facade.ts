@@ -1,5 +1,5 @@
-import { computed, effect, inject, Injectable, signal } from "@angular/core";
-import { SoundSvc, TimerSound } from "../../../services/sound-svc";
+import { computed, inject, Injectable, signal } from "@angular/core";
+import { SoundSvc } from "../../../services/sound-svc";
 import { TimerInstanceStore } from "../../../services/timer-instance.store";
 import { TimerSettingsSvc } from "../../../services/timer-settings-svc";
 import { TimerPreset } from "../../../core/repositories/timer.repository";

@@ -3,10 +3,14 @@ import { TimerEngine } from "./timer-engine";
 import { TimerSound } from "./sound-svc";
 import { BaseTimer } from "./base-timer";
 import { TimerHistorySvc } from "./timer-history-svc";
+import { NotificationSvc } from "./notification-svc";
+import { SettingsSvc } from "./settings-svc";
 
 export class TimerInstance extends BaseTimer<TimerEngine> {
     private readonly destroyRef = inject(DestroyRef);
     private readonly history = inject(TimerHistorySvc);
+    private readonly notification = inject(NotificationSvc);
+    private readonly settings = inject(SettingsSvc);
 
     readonly id = crypto.randomUUID();
     readonly startedAt = signal(0);
@@ -24,6 +28,7 @@ export class TimerInstance extends BaseTimer<TimerEngine> {
                 this.historySaved = true;
                 await this.history.add(this, 'finished');
             }
+            this.notifyFinished();
         }
 
         this.destroyRef.onDestroy(() => {
@@ -46,5 +51,17 @@ export class TimerInstance extends BaseTimer<TimerEngine> {
 
     sound(): TimerSound {
         return this.activePreset()?.sound ?? 'none';
+    }
+
+    private notifyFinished() {
+        if (!this.notification.canNotify(this.settings.notificationsEnabled())) {
+            return;
+        }
+
+        const preset = this.activePreset();
+        this.notification.show({
+            title: preset?.title || 'timer',
+            body: 'timer finished'
+        })
     }
 }

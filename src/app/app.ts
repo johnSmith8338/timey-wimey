@@ -8,6 +8,7 @@ import { UpdateSvc } from './services/update-svc';
 import { InstallPrompt } from "./components/install-prompt/install-prompt";
 import { ToastSvc } from './services/toast-svc';
 import { APP_VERSION } from '../app-info/version';
+import { IosInstallPrompt } from "./components/ios-install-prompt/ios-install-prompt";
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,8 @@ import { APP_VERSION } from '../app-info/version';
     RouterOutlet,
     Header,
     UpdatePrompt,
-    InstallPrompt
+    InstallPrompt,
+    IosInstallPrompt
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'

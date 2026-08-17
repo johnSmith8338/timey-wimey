@@ -7,6 +7,7 @@ import { Settings } from './pages/settings/settings';
 import { AlarmPage } from './pages/alarm/alarm';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { appInitGuard } from './utils/app.guard';
+import { About } from './pages/about/about';
 
 export const routes: Routes = [
     {
@@ -70,6 +71,17 @@ export const routes: Routes = [
             showInMenu: true,
             icon: '',
             order: 5
+        }
+    },
+    {
+        path: 'about',
+        component: About,
+        canMatch: [appInitGuard],
+        data: {
+            title: 'about',
+            showInMenu: true,
+            icon: '',
+            order: 6
         }
     },
     {

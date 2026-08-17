@@ -1,3 +1,3 @@
 // GENERATED FILE. DO NOT EDIT.
 
-export const APP_VERSION = '0.0.5';
+export const APP_VERSION = '0.0.6';
