@@ -37,10 +37,15 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Verify build output
+        run: |
+          echo "Build output:"
+          find ./dist/timey-wimey/browser -maxdepth 2 -type f | sort
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/timey-wimey/browser
+          path: dist/timey-wimey/browser/
 
   deploy:
     environment:
