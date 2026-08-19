@@ -22,25 +22,48 @@ export class TimerInstanceStore {
         const timer = this.factory.create();
 
         timer.loadPreset(preset);
+        this.attachCompletionHandler(timer);
+        timer.start();
+        this.timers.update(list => [...list, timer]);
+        this.active.set(timer);
 
+        return timer;
+    }
+
+    runFromHistory(item: TimerHistoryItem) {
+        const timer = this.factory.create();
+
+        timer.historySnapshot.set(structuredClone(item.snapshot));
+
+        timer.engine.setDuration(
+            item.snapshot.hours,
+            item.snapshot.minutes,
+            item.snapshot.seconds,
+        )
+
+        if (item.elapsedMs < item.durationMs) {
+            timer.engine.remainingMs.set(item.durationMs - item.elapsedMs);
+        }
+
+        this.attachCompletionHandler(timer);
+        timer.start();
+        this.timers.update(list => [...list, timer]);
+        this.active.set(timer);
+
+        return timer;
+    }
+
+    private attachCompletionHandler(timer: TimerInstance) {
         const previousFinished = timer.engine.onFinished;
 
         timer.engine.onFinished = async () => {
             await previousFinished?.();
-            this.finishedQueue.update(list => [...list, timer]);
-            this.soundSvc.play(timer.activePreset()?.sound ?? DEFAULT_TIMER_SOUND);
+            this.finishedQueue.update(list => [
+                ...list,
+                timer
+            ])
+            this.soundSvc.play(timer.sound());
         }
-
-        timer.start();
-
-        this.timers.update(list => {
-            const next = [...list, timer];
-            return next;
-        });
-
-        this.active.set(timer);
-
-        return timer;
     }
 
     remove(timer: TimerInstance) {
@@ -68,25 +91,5 @@ export class TimerInstanceStore {
         timer.engine.stop();
         this.remove(timer);
         this.soundSvc.stop();
-    }
-
-    runFromHistory(item: TimerHistoryItem) {
-        const timer = this.factory.create();
-
-        timer.engine.setDuration(
-            item.snapshot.hours,
-            item.snapshot.minutes,
-            item.snapshot.seconds,
-        )
-
-        if (item.elapsedMs < item.durationMs) {
-            timer.engine.remainingMs.set(item.durationMs - item.elapsedMs);
-        }
-
-        timer.start();
-        this.timers.update(list => [...list, timer]);
-        this.active.set(timer);
-
-        return timer;
     }
 }

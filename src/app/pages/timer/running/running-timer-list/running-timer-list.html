@@ -3,7 +3,7 @@
 }
 @if (store.finished(); as timer) {
     <app-timer-finished-dialog
-        [preset]="timer.activePreset()!"
+        [timer]="timer"
         (repeat)="repeat(timer)"
         (stop)="stop(timer)" />
 }

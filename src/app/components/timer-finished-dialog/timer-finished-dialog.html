@@ -1,11 +1,11 @@
 <div class="overlay">
     <div class="dialog">
         <h2>time is over</h2>
-        <h3>{{preset().title}}</h3>
+        <h3>{{timer().title()}}</h3>
         <div class="time">
-            {{preset().hours | number:'2.0'}}:
-            {{preset().minutes | number:'2.0'}}:
-            {{preset().seconds | number:'2.0'}}:
+            {{timer().engine.totalHours() | number:'2.0'}}:
+            {{timer().engine.totalMinutes() | number:'2.0'}}:
+            {{timer().engine.totalSeconds() | number:'2.0'}}:
         </div>
         <div class="buttons">
             <button (click)="repeat.emit()">repeat</button>

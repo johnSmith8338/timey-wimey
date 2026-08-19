@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { TimerPreset } from '../../core/repositories/timer.repository';
 import { DecimalPipe } from '@angular/common';
+import { TimerInstance } from '../../services/timer-instance';
 
 @Component({
   selector: 'app-timer-finished-dialog',
@@ -10,7 +10,7 @@ import { DecimalPipe } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimerFinishedDialog {
-  readonly preset = input.required<TimerPreset>();
+  readonly timer = input.required<TimerInstance>();
   readonly stop = output();
   readonly repeat = output();
 }

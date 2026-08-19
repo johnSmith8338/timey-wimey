@@ -1,3 +1,4 @@
+import { TimerIcon } from "../constants/icons";
 import { TimerSound } from "../services/sound-svc";
 
 export type TimerHistoryStatus = 'finished' | 'cancelled';
@@ -8,7 +9,7 @@ export interface TimerHistorySnapshot {
     minutes: number;
     seconds: number;
     sound: TimerSound;
-    icon?: string;
+    icon?: TimerIcon;
 }
 
 export interface TimerHistoryItem {

@@ -48,10 +48,7 @@ export class AlarmRingingFacade {
         if (this.notification.canNotify(this.settings.notificationsEnabled())) {
             this.notification.show({
                 title: alarm.title,
-                body: `
-                    ${alarm.hour.toString().padStart(2, '0')}:
-                    ${alarm.minute.toString().padStart(2, '0')}
-                    `
+                body: this.formatAlarmTime(alarm)
             })
         }
 
@@ -129,10 +126,14 @@ export class AlarmRingingFacade {
 
         this.notification.show({
             title: 'missed alarm',
-            body: `${alarm.title}\n` +
-                `${alarm.hour.toString().padStart(2, '0')}:
-                ${alarm.minute.toString().padStart(2, '0')}`,
+            body: `${alarm.title}\n${this.formatAlarmTime(alarm)}`,
             requireInteraction: false
         })
+    }
+
+    private formatAlarmTime(alarm: Alarm): string {
+        const hours = alarm.hour.toString().padStart(2, '0');
+        const minutes = alarm.minute.toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
     }
 }
