@@ -8,6 +8,7 @@ import { AlarmPage } from './pages/alarm/alarm';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { appInitGuard } from './utils/app.guard';
 import { About } from './pages/about/about';
+import { EventAlarms } from './pages/event-alarms/event-alarms';
 
 export const routes: Routes = [
     {
@@ -63,6 +64,17 @@ export const routes: Routes = [
         }
     },
     {
+        path: 'event-alarm',
+        component: EventAlarms,
+        canMatch: [appInitGuard],
+        data: {
+            title: 'event-alarms',
+            showInMenu: true,
+            icon: '',
+            order: 5
+        }
+    },
+    {
         path: 'settings',
         component: Settings,
         canMatch: [appInitGuard],
@@ -70,7 +82,7 @@ export const routes: Routes = [
             title: 'settings',
             showInMenu: true,
             icon: '',
-            order: 5
+            order: 6
         }
     },
     {
@@ -81,7 +93,7 @@ export const routes: Routes = [
             title: 'about',
             showInMenu: true,
             icon: '',
-            order: 6
+            order: 7
         }
     },
     {

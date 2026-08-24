@@ -1,0 +1,122 @@
+<div class="overlay">
+    <div class="dialog">
+        <header>
+            <h3>{{facade.editing()?'edit event':'new event'}}</h3>
+        </header>
+        <label >
+            <span>title</span>
+            <input type="text" [value]="facade.title()" (input)="facade.setTitle($any($event.target).value)" />
+        </label>
+        <label >
+            <span>description</span>
+            <textarea [value]="facade.description()" (input)="facade.setDescription($any($event.target).value)"></textarea>
+        </label>
+        <div class="row">
+            <label >
+                <span>date</span>
+                <input type="date" [value]="facade.date()" (input)="facade.setDate($any($event.target).value)" />
+            </label>
+            <label >
+                <span>time</span>
+                <input type="time" [value]="facade.time()" (input)="facade.setTime($any($event.target).value)" />
+            </label>
+        </div>
+        <div class="repeat">
+            <span>repeat</span>
+            @for (type of repeatTypes; track type.value) {
+                <button type="button"
+                    [class.active]="facade.repeat().type===type.value"
+                    (click)="onRepeatTypeChange(type.value)">
+                    {{type.title}}
+                </button>
+            }
+        </div>
+        @switch (facade.repeat().type) {
+            @case('daily'){
+                @if (facade.dailyRepeat(); as repeat) {
+                    <label >
+                        <span>every</span>
+                        <input type="number" 
+                            min="1" 
+                            [value]="repeat.interval" 
+                            (input)="onDailyIntervalChange($any($event.target).value)" />
+                        <span>day(s)</span>
+                    </label>
+                }
+            }
+            @case ('weekly') {
+                @if (facade.weeklyRepeat(); as repeat) {
+                    <div class="weekdays">
+                        @for (day of weekdays; track day) {
+                            <button type="button" 
+                                [class.active]="repeat.days.includes(day)"
+                                (click)="toggleWeekDay(day)">
+                                {{day}}
+                            </button>
+                        }
+                    </div>
+                }
+            }
+            @case ('monthly') {
+                @if (facade.monthlyRepeat(); as repeat) {
+                    <label >
+                        <span>day of month</span>
+                        <input type="number" 
+                            min="1" 
+                            max="31"
+                            [value]="repeat.day" 
+                            (input)="onMonthlyDayChange($any($event.target).value)" />
+                    </label>
+                }
+            }
+            @case ('yearly') {
+                @if (facade.yearlyRepeat(); as repeat) {
+                    <div class="row">
+                        <label >
+                            <span>month</span>
+                            <input type="number"
+                                min="1"
+                                max="12"
+                                [value]="repeat.month"
+                                (input)="onYearlyMonthChange($any($event.target).value)">
+                        </label>
+                        <label >
+                            <span>day</span>
+                            <input type="number"
+                                min="1"
+                                max="31"
+                                [value]="repeat.day"
+                                (input)="onYearlyDayChange($any($event.target).value)">
+                        </label>
+                    </div>
+                }
+            }
+        }
+        <div class="sound">
+            <span>sound</span>
+            <div class="sound-row">
+                <div class="sound-options">
+                    @for (sound of sounds; track sound.value) {
+                        <button type="button" 
+                            [class.active]="facade.sound()===sound.value" 
+                            (click)="onSoundchange(sound.value)">
+                            {{sound.title}}
+                        </button>
+                    }
+                </div>
+                @if (facade.sound()!=='none') {
+                    <button type="button"
+                        class="preview"
+                        aria-label="preview sound"
+                        (click)="previewSound(facade.sound())">
+                        ▶
+                    </button>
+                }
+            </div>
+        </div>
+        <div class="actions">
+            <button type="button" (click)="facade.cancel()">cancel</button>
+            <button type="button" (click)="facade.save()">save</button>
+        </div>
+    </div>
+</div>

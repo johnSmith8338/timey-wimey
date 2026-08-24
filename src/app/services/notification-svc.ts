@@ -27,11 +27,11 @@ export class NotificationSvc {
     return Notification.requestPermission();
   }
 
-  show(options: NotificationOptions) {
+  show(options: NotificationOptions): Notification | null {
     if (!this.supported) return null;
     if (Notification.permission !== 'granted') return null;
 
-    return new Notification(options.title, {
+    return new Notification(options.title ?? '', {
       body: options.body,
       icon: options.icon,
       tag: options.tag,
@@ -44,5 +44,9 @@ export class NotificationSvc {
     return (
       this.supported && enabled && this.permission === 'granted'
     )
+  }
+
+  close(notification: Notification | null): void {
+    notification?.close();
   }
 }

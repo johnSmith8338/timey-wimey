@@ -9,6 +9,8 @@ import { InstallPrompt } from "./components/install-prompt/install-prompt";
 import { ToastSvc } from './services/toast-svc';
 import { APP_VERSION } from '../app-info/version';
 import { IosInstallPrompt } from "./components/ios-install-prompt/ios-install-prompt";
+import { EventAlarmRinging } from "./pages/event-alarms/event-alarm-ringing/event-alarm-ringing";
+import { EventAlarmScheduler } from './services/event-alarm-scheduler';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +19,8 @@ import { IosInstallPrompt } from "./components/ios-install-prompt/ios-install-pr
     Header,
     UpdatePrompt,
     InstallPrompt,
-    IosInstallPrompt
+    IosInstallPrompt,
+    EventAlarmRinging
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
@@ -27,6 +30,7 @@ export class App {
   private readonly initializer = inject(AppInitializerSvc);
   readonly updateSvc = inject(UpdateSvc);
   readonly toastSvc = inject(ToastSvc);
+  private readonly scheduler = inject(EventAlarmScheduler);
 
   protected readonly title = signal('stopwatch');
   readonly hasHeader = signal(true);
@@ -35,6 +39,8 @@ export class App {
     this.updHasHeader();
 
     this.showUpdateToast();
+
+    void this.scheduler.load();
 
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd)

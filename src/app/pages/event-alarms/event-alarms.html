@@ -1,0 +1,34 @@
+<header>
+    <h3>events</h3>
+    <small>{{events().length}}</small>
+    <button type="button" (click)="create()">+ create</button>
+</header>
+@if (events().length) {
+    <div class="event-list">
+        @for (event of events(); track event.id) {
+            <div class="event-card">
+                <div>
+                    <h4>{{event.title}}</h4>
+                    @if (event.description) {
+                        <p>{{event.description}}</p>
+                    }
+                    <div>
+                        {{event.date}} · {{event.time}}
+                    </div>
+                </div>
+                <div>
+                    <span>{{event.enabled?'enabled':'disabled'}}</span>
+                    <button (click)="toggle(event.id)">{{event.enabled?'disable':'enable'}}</button>
+                    <button type="button" (click)="edit(event)">edit</button>
+                    <button (click)="remove(event.id)">delete</button>
+                </div>
+            </div>
+        }
+    </div>
+}@else {
+    <p>no events yet</p>
+}
+
+@if (facade.editorOpened()) {
+    <app-event-alarm-editor />
+}

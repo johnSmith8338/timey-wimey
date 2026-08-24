@@ -1,0 +1,20 @@
+@if (facade.ringingEvent(); as event) {
+    <div class="overlay">
+        <div class="dialog">
+            <header>
+                <span class="icon">⏰</span>
+                <span>event reminder</span>
+            </header>
+            <main>
+                <h3>{{event.title}}</h3>
+                @if (event.description) {
+                    <p>{{event.description}}</p>
+                }
+                <time >{{event.date}} · {{event.time}}</time>
+            </main>
+            <footer>
+                <button type="button" (click)="facade.stop()">stop</button>
+            </footer>
+        </div>
+    </div>
+}

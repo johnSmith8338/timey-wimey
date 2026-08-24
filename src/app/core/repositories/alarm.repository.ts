@@ -9,8 +9,6 @@ interface AlarmStorage {
     alarms: Alarm[];
 }
 
-const STORAGE_KEY = 'alarm';
-
 @Injectable({
     providedIn: 'root'
 })
