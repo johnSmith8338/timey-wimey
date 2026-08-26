@@ -56,7 +56,7 @@ export class AlarmListFacade {
         if (!alarm) return;
 
         const shouldAskForNotifications = !this.settings.notificationPromptShown();
-        await this.alarmSvc.saveAlarm(alarm);
+        await this.alarmSvc.save(alarm);
         this.workspace.clear();
         this.closeEditor();
 

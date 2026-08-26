@@ -1,15 +1,15 @@
 import { computed, inject, Injectable } from "@angular/core";
 import { EventAlarmDraftSvc } from "./event-alarm-draft";
-import { EventAlarmsFacade } from "./event-alarms.facade";
-import { EventAlarm, EventAlarmRepeat } from "../models/event-alarm.model";
 import { TimerSound } from "./sound-svc";
+import { EventAlarm, EventAlarmRepeat } from "../models/alarm.interface";
+import { AlarmSvc } from "./alarm-svc";
 
 @Injectable({
     providedIn: 'root'
 })
 export class EventAlarmEditorFacade {
     private readonly draft = inject(EventAlarmDraftSvc);
-    private readonly alarms = inject(EventAlarmsFacade);
+    private readonly alarms = inject(AlarmSvc);
 
     readonly title = this.draft.title;
     readonly description = this.draft.description;
@@ -70,42 +70,47 @@ export class EventAlarmEditorFacade {
         if (!draft.date || !draft.time) return;
         if (!this.isValidRepeat(draft.repeat)) return;
 
-        if (this.draft.editingId()) {
-            const current = this.alarms.events().find(
-                x => x.id === this.draft.editingId()
-            )
+        const editingId = this.draft.editingId();
 
+        if (editingId) {
+            const current = this.alarms.getEvent(editingId);
             if (!current) return;
 
-            await this.alarms.update({
+            await this.alarms.saveEvent({
                 ...current,
                 title: draft.title.trim(),
                 description: draft.description.trim(),
                 date: draft.date,
                 time: draft.time,
-                repeat: draft.repeat,
+                repeat: structuredClone(draft.repeat),
                 sound: draft.sound
             })
         } else {
+            const now = Date.now();
+
             const event: EventAlarm = {
+                type: 'event',
                 id: crypto.randomUUID(),
+                groupId: null,
                 title: draft.title.trim(),
                 description: draft.description.trim(),
                 date: draft.date,
                 time: draft.time,
-                repeat: draft.repeat,
+                repeat: structuredClone(draft.repeat),
                 sound: draft.sound,
                 enabled: true,
-                createdAt: Date.now(),
+                createdAt: now,
+                updatedAt: now,
+                order: 0,
                 lastFiredAt: null
             }
-            await this.alarms.add(event);
+            await this.alarms.saveEvent(event);
         }
-        this.alarms.closeEditor();
+        this.draft.closeEditor();
     }
 
     cancel() {
-        this.alarms.closeEditor();
+        this.draft.closeEditor();
     }
 
     private isValidRepeat(repeat: EventAlarmRepeat): boolean {

@@ -18,6 +18,7 @@ export interface AlarmGroupView {
 }
 
 export interface Alarm {
+    type: 'alarm';
     id: string;
     groupId: string | null;
     title: string;
@@ -31,4 +32,54 @@ export interface Alarm {
     enabled: boolean;
 }
 
+export interface EventAlarm {
+    type: 'event';
+    id: string;
+    groupId: null;
+    title: string;
+    description: string;
+    date: string;
+    time: string;
+    sound: TimerSound;
+    enabled: boolean;
+    repeat: EventAlarmRepeat;
+    createdAt: number;
+    updatedAt: number;
+    order: number;
+    lastFiredAt: number | null;
+}
+
 export type AlarmRepeat = 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun';
+
+export type WeekDay = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+
+export type EventAlarmRepeat =
+    {
+        type: 'once';
+    }
+    | {
+        type: 'daily';
+        interval: number;
+    }
+    | {
+        type: 'weekly';
+        days: WeekDay[];
+    }
+    | {
+        type: 'monthly';
+        day: number;
+    }
+    | {
+        type: 'yearly';
+        month: number;
+        day: number;
+    }
+
+export interface EventAlarmDraft {
+    title: string;
+    description: string;
+    date: string;
+    time: string;
+    repeat: EventAlarmRepeat;
+    sound: TimerSound;
+}

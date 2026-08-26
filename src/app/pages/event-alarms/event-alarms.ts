@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { EventAlarmsFacade } from '../../services/event-alarms.facade';
-import { EventAlarm } from '../../models/event-alarm.model';
 import { EventAlarmEditor } from "./event-alarm-editor/event-alarm-editor";
+import { AlarmSvc } from '../../services/alarm-svc';
+import { EventAlarmDraftSvc } from '../../services/event-alarm-draft';
+import { EventAlarm } from '../../models/alarm.interface';
 
 @Component({
   selector: 'app-event-alarms',
@@ -11,27 +12,33 @@ import { EventAlarmEditor } from "./event-alarm-editor/event-alarm-editor";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventAlarms {
-  readonly facade = inject(EventAlarmsFacade);
+  private readonly alarms = inject(AlarmSvc);
+  private readonly draft = inject(EventAlarmDraftSvc);
 
-  readonly events = this.facade.events;
+  readonly events = this.alarms.events;
+  readonly editorOpened = this.draft.editorOpened;
 
   constructor() {
-    void this.facade.load();
+    void this.alarms.load();
   }
 
   async remove(id: string) {
-    await this.facade.remove(id);
+    await this.alarms.deleteEvent(id);
   }
 
   async toggle(id: string) {
-    await this.facade.toggle(id);
+    await this.alarms.toggleEvent(id);
   }
 
   create() {
-    this.facade.create();
+    this.draft.openCreate();
   }
 
   edit(event: EventAlarm) {
-    this.facade.edit(event);
+    this.draft.openEdit(event);
+  }
+
+  closeEditor() {
+    this.draft.closeEditor();
   }
 }

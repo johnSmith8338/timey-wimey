@@ -3,7 +3,7 @@ import { SoundSvc } from "./sound-svc";
 import { NotificationSvc } from "./notification-svc";
 import { WakeLockSvc } from "./wake-lock-svc";
 import { SettingsSvc } from "./settings-svc";
-import { EventAlarm } from "../models/event-alarm.model";
+import { EventAlarm } from "../models/alarm.interface";
 
 @Injectable({
     providedIn: 'root'

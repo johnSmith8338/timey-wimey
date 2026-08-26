@@ -1,6 +1,6 @@
 import { computed, Injectable, signal } from "@angular/core";
-import { EventAlarm, EventAlarmDraft, EventAlarmRepeat } from "../models/event-alarm.model";
 import { TimerSound } from "./sound-svc";
+import { EventAlarm, EventAlarmDraft, EventAlarmRepeat } from "../models/alarm.interface";
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +13,8 @@ export class EventAlarmDraftSvc {
     readonly repeat = signal<EventAlarmRepeat>({ type: 'once' });
     readonly sound = signal<TimerSound>('none');
     readonly editingId = signal<string | null>(null);
+
+    readonly editorOpened = signal(false);
 
     readonly editing = computed(() => this.editingId() !== null);
 
@@ -61,5 +63,20 @@ export class EventAlarmDraftSvc {
             repeat: structuredClone(this.repeat()),
             sound: this.sound()
         }
+    }
+
+    openCreate() {
+        this.reset();
+        this.editorOpened.set(true);
+    }
+
+    openEdit(event: EventAlarm) {
+        this.load(event);
+        this.editorOpened.set(true);
+    }
+
+    closeEditor() {
+        this.reset();
+        this.editorOpened.set(false);
     }
 }

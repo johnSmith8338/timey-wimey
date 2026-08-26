@@ -1,8 +1,7 @@
-import { computed, effect, inject, Injectable, Signal, signal } from '@angular/core';
-import { Alarm, AlarmGroup, AlarmGroupView } from '../models/alarm.interface';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
+import { Alarm, AlarmGroup, AlarmGroupView, EventAlarm } from '../models/alarm.interface';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AlarmRepository } from '../core/repositories/alarm.repository';
-import { AlarmEngine } from './alarm-engine';
 import { AlarmScheduler } from './alarm-scheduler';
 import { SettingsSvc } from './settings-svc';
 
@@ -14,8 +13,10 @@ export class AlarmSvc {
   private readonly settings = inject(SettingsSvc);
 
   readonly alarms = signal<Alarm[]>([]);
-  readonly loading = signal(false);
+  readonly events = signal<EventAlarm[]>([]);
   readonly groups = signal<AlarmGroup[]>([]);
+
+  readonly loading = signal(false);
 
   private readonly scheduler = new AlarmScheduler();
 
@@ -129,8 +130,10 @@ export class AlarmSvc {
     this.loading.set(true);
     try {
       const data = await this.repo.load();
+
       this.groups.set(data.groups);
       this.alarms.set(data.alarms);
+      this.events.set(data.events);
     }
     finally {
       this.loading.set(false);
@@ -140,24 +143,44 @@ export class AlarmSvc {
   private async persist() {
     await this.repo.save({
       groups: this.groups(),
-      alarms: this.alarms()
+      alarms: this.alarms(),
+      events: this.events()
     })
   }
 
-  async saveAlarm(alarm: Alarm) {
+  async save(alarm: Alarm) {
     const alarms = [...this.alarms()];
     const index = alarms.findIndex(a => a.id === alarm.id);
 
-    alarm.updatedAt = Date.now();
+    const updated = {
+      ...structuredClone(alarm),
+      updatedAt: Date.now()
+    }
 
     if (index >= 0) {
-      alarms[index] = structuredClone(alarm);
+      alarms[index] = updated;
     } else {
-      alarms.push(structuredClone(alarm));
+      alarms.push(updated);
     }
 
     this.alarms.set(alarms);
     await this.persist();
+  }
+
+  getAlarm(id: string): Alarm | null {
+    return this.alarms().find(alarm => alarm.id === id) ?? null;
+  }
+
+  async updateAlarm(id: string, patch: Partial<Alarm>) {
+    const alarm = this.getAlarm(id);
+
+    if (!alarm) return;
+
+    await this.save({
+      ...alarm,
+      ...patch,
+      updatedAt: Date.now()
+    });
   }
 
   async deleteAlarm(id: string) {
@@ -206,6 +229,7 @@ export class AlarmSvc {
 
   createAlarm(): Alarm {
     return {
+      type: 'alarm',
       id: crypto.randomUUID(),
       groupId: null,
       title: 'new alarm',
@@ -325,9 +349,10 @@ export class AlarmSvc {
     return this.groups().find(g => g.id === id) ?? null;
   }
 
-  async restore(groups: AlarmGroup[], alarms: Alarm[]) {
+  async restore(groups: AlarmGroup[], alarms: Alarm[], events: EventAlarm[] = []) {
     this.groups.set(structuredClone(groups));
     this.alarms.set(structuredClone(alarms));
+    this.events.set(structuredClone(events));
 
     await this.persist();
   }
@@ -345,10 +370,87 @@ export class AlarmSvc {
       .sort((a, b) => a.order - b.order)
       .map(group => ({
         group,
-        alarm: this.sortAlarms(
+        alarms: this.sortAlarms(
           alarms.filter(a => a.groupId === group.id)
         )
       })
       )
   })
+
+  /**
+   * EventAlarms
+   */
+
+  createEvent(): EventAlarm {
+    const now = Date.now();
+
+    return {
+      type: 'event',
+      id: crypto.randomUUID(),
+      groupId: null,
+      title: 'new event',
+      description: '',
+      date: '',
+      time: '09:00',
+      sound: 'none',
+      enabled: true,
+      repeat: { type: 'once' },
+      createdAt: now,
+      updatedAt: now,
+      order: 0,
+      lastFiredAt: null
+    };
+  }
+
+  getEvent(id: string): EventAlarm | null {
+    return this.events().find(event => event.id === id) ?? null;
+  }
+
+  async saveEvent(event: EventAlarm): Promise<void> {
+    const events = [...this.events()];
+    const index = events.findIndex(e => e.id === event.id);
+    const updatedEvent: EventAlarm = {
+      ...structuredClone(event),
+      updatedAt: Date.now()
+    }
+
+    if (index >= 0) {
+      events[index] = updatedEvent;
+    } else {
+      events.push(updatedEvent);
+    }
+
+    this.events.set(events);
+    await this.persist();
+  }
+
+  async updateEvent(id: string, patch: Partial<EventAlarm>): Promise<void> {
+    const event = this.getEvent(id);
+    if (!event) return;
+
+    await this.saveEvent({
+      ...event,
+      ...patch,
+      id,
+      updatedAt: Date.now()
+    })
+  }
+
+  async deleteEvent(id: string): Promise<void> {
+    this.events.update(list => list.filter(event => event.id !== id));
+    await this.persist();
+  }
+
+  async toggleEvent(id: string): Promise<void> {
+    this.events.update(list =>
+      list.map(event => event.id === id ?
+        {
+          ...event,
+          enabled: !event.enabled,
+          updatedAt: Date.now()
+        } : event
+      )
+    )
+    await this.persist();
+  }
 }

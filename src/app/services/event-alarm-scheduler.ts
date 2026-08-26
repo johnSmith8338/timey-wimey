@@ -1,7 +1,7 @@
 import { DestroyRef, effect, inject, Injectable, signal } from "@angular/core";
-import { EventAlarmSvc } from "./event-alarm-svc";
-import { EventAlarm, EventAlarmRepeat, WeekDay } from "../models/event-alarm.model";
 import { EventAlarmRingingFacade } from "./event-alarm-ringing.facade";
+import { AlarmSvc } from "./alarm-svc";
+import { EventAlarm, EventAlarmRepeat, WeekDay } from "../models/alarm.interface";
 
 type DailyRepeat = Extract<EventAlarmRepeat, { type: 'daily' }>;
 type WeeklyRepeat = Extract<EventAlarmRepeat, { type: 'weekly' }>;
@@ -10,7 +10,7 @@ type WeeklyRepeat = Extract<EventAlarmRepeat, { type: 'weekly' }>;
     providedIn: 'root'
 })
 export class EventAlarmScheduler {
-    private readonly alarms = inject(EventAlarmSvc);
+    private readonly alarmSvc = inject(AlarmSvc);
     private readonly ringing = inject(EventAlarmRingingFacade);
     private readonly destroyRef = inject(DestroyRef);
 
@@ -22,7 +22,7 @@ export class EventAlarmScheduler {
     constructor() {
         effect(() => {
             if (!this.loaded()) return;
-            this.alarms.events();
+            this.alarmSvc.events();
             this.schedule();
         })
 
@@ -31,16 +31,14 @@ export class EventAlarmScheduler {
         })
     }
 
+    private events(): EventAlarm[] {
+        return this.alarmSvc.events();
+    }
+
     async load() {
-        console.log('[EventScheduler] load');
         if (this.loaded()) return;
 
-        await this.alarms.load();
-
-        console.log(
-            '[EventScheduler] events:',
-            this.alarms.events()
-        );
+        await this.alarmSvc.load();
 
         this.loaded.set(true);
 
@@ -50,26 +48,18 @@ export class EventAlarmScheduler {
 
     private async fire(alarm: EventAlarm) {
         if (this.firing.has(alarm.id)) {
-            console.log('[EventScheduler] already firing', alarm.id);
             return;
         }
-        console.log('[EventScheduler] fire()', alarm.id, alarm.title);
 
         this.firing.add(alarm.id);
 
         try {
-            console.log('[EventScheduler] ringing...');
             await this.ringing.ring(alarm);
-            console.log('[EventScheduler] ringing done');
 
-            const firedAt = Date.now();
-
-            await this.alarms.update({
-                ...alarm,
+            await this.alarmSvc.updateEvent(alarm.id, {
                 enabled: alarm.repeat.type !== 'once',
-                lastFiredAt: firedAt
+                lastFiredAt: Date.now()
             })
-            console.log('[EventScheduler] alarm updated');
         } finally {
             this.firing.delete(alarm.id);
         }
@@ -246,13 +236,7 @@ export class EventAlarmScheduler {
         this.clearTimeout();
 
         const now = new Date();
-
-        console.log(
-            '[EventScheduler] schedule:',
-            now.toLocaleString()
-        );
-
-        const next = this.alarms.events()
+        const next = this.events()
             .filter(event => event.enabled)
             .map(event => ({
                 event,
@@ -260,12 +244,6 @@ export class EventAlarmScheduler {
             }))
             .filter(item => item.occurrence !== null)
             .sort((a, b) => a.occurrence!.getTime() - b.occurrence!.getTime())[0]
-
-        console.log(
-            '[EventScheduler] next:',
-            next?.event.title,
-            next?.occurrence?.toLocaleString()
-        );
 
         if (!next?.occurrence) return;
 
@@ -283,12 +261,6 @@ export class EventAlarmScheduler {
         const MAX_DELAY = 2_147_483_647;
         const delay = target.getTime() - Date.now();
 
-        console.log(
-            '[EventScheduler] timeout:',
-            target.toLocaleString(),
-            delay
-        );
-
         if (delay <= 0) {
             void this.checkAndSchedule();
             return;
@@ -301,47 +273,25 @@ export class EventAlarmScheduler {
     }
 
     private async checkAndSchedule() {
-        console.log('[EventScheduler] checkAndSchedule');
         await this.checkMissed();
-        console.log('[EventScheduler] after checkMissed');
         this.schedule();
     }
 
     private async checkMissed() {
         const now = new Date();
 
-        console.log(
-            '[EventScheduler] checkMissed',
-            now.toLocaleString(),
-            this.alarms.events()
-        );
-
-        for (const alarm of this.alarms.events()) {
-            console.log(
-                '[EventScheduler] checking',
-                alarm.id,
-                alarm.title,
-                'enabled:', alarm.enabled,
-                'lastFiredAt:', alarm.lastFiredAt
-            );
+        for (const alarm of this.events()) {
             if (!alarm.enabled) {
-                console.log('[EventScheduler] skipped: disabled');
                 continue;
             }
 
             const occurrence = this.findLastOccurrence(alarm, now);
-            console.log(
-                '[EventScheduler] last occurrence:',
-                occurrence?.toLocaleString()
-            );
 
             if (!occurrence) {
-                console.log('[EventScheduler] skipped: no occurrence');
                 continue;
             }
             if (alarm.lastFiredAt !== null && alarm.lastFiredAt >= occurrence.getTime()) continue;
 
-            console.log('[EventScheduler] FIRE', alarm.id);
             await this.fire(alarm);
         }
     }

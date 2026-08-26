@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { EventAlarmEditorFacade } from '../../../services/event-alarm-editor.facade';
-import { EventAlarmRepeat, WeekDay } from '../../../models/event-alarm.model';
 import { SoundSvc, TimerSound } from '../../../services/sound-svc';
+import { EventAlarmRepeat, WeekDay } from '../../../models/alarm.interface';
 
 @Component({
   selector: 'app-event-alarm-editor',
