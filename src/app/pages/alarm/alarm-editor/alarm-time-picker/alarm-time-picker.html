@@ -1,7 +1,7 @@
 <div class="picker-mode">
-    <button type="button" [class.active]="inputMode()==='dial'" (click)="inputMode.set('dial')">dial</button>
-    <button type="button" [class.active]="inputMode()==='inputs'" (click)="inputMode.set('inputs')">inputs</button>
-    <button type="button" [class.active]="inputMode()==='wheel'" (click)="inputMode.set('wheel')">wheel</button>
+    <button type="button" [class.active]="inputMode()==='dial'" (click)="setInputMode('dial')">dial</button>
+    <button type="button" [class.active]="inputMode()==='inputs'" (click)="setInputMode('inputs')">inputs</button>
+    <button type="button" [class.active]="inputMode()==='wheel'" (click)="setInputMode('wheel')">wheel</button>
 </div>
 
 @switch (inputMode()) {

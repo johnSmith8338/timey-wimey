@@ -10,6 +10,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     keepScreenAwake: true,
     alarmSortMode: 'manual',
     alarmAutoStopMinutes: 2,
+    alarmTimeInputMode: 'dial',
     firstRunCompleted: false,
     notificationsEnabled: true,
     notificationPromptShown: false,

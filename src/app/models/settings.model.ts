@@ -1,3 +1,5 @@
+import { AlarmInputMode } from "./alarm-input-mode.type";
+
 export type AppTheme = 'light' | 'dark';
 
 export type HistoryRetentionDays = -1 | 1 | 7 | 30 | 90;
@@ -12,6 +14,7 @@ export interface AppSettings {
     keepScreenAwake: boolean;
     alarmSortMode: AlarmSortMode;
     alarmAutoStopMinutes: AlarmAutoStopMinutes;
+    alarmTimeInputMode: AlarmInputMode;
     firstRunCompleted: boolean;
     notificationsEnabled: boolean;
     notificationPromptShown: boolean;
