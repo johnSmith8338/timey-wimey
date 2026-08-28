@@ -1,11 +1,20 @@
 <header>
     <h3>events</h3>
-    <small>{{events().length}}</small>
+    <small>{{filteredEvents().length}}</small>
     <button type="button" (click)="create()">+ create</button>
 </header>
 @if (events().length) {
+    <div class="event-search">
+        <span>search</span>
+        <input type="search"
+            placeholder="title, description, date, repeat..."
+            [value]="search()"
+            (input)="setSearch($any($event.target).value)" />
+    </div>
+}
+@if (filteredEvents().length) {
     <div class="event-list">
-        @for (event of events(); track event.id) {
+        @for (event of filteredEvents(); track event.id) {
             <div class="event-card">
                 <div>
                     <h4>{{event.title}}</h4>
@@ -14,6 +23,9 @@
                     }
                     <div>
                         {{event.date}} · {{event.time}}
+                    </div>
+                    <div class="event-repeat">
+                        {{describeEventRepeat(event.repeat)}}
                     </div>
                 </div>
                 <div>
@@ -25,10 +37,20 @@
             </div>
         }
     </div>
+}@else if (search().trim()) {
+    <p>no events found</p>
 }@else {
     <p>no events yet</p>
 }
 
 @if (editorOpened()) {
     <app-event-alarm-editor />
+}
+
+@if (deletingEvent(); as event) {
+    <app-confirm-dialog 
+        title="delete event?"
+        [message]="`delete event ${event.title}?`"
+        (confirm)="confirmDeleteEvent()"
+        (cancel)="cancelDeleteEvent()" />
 }

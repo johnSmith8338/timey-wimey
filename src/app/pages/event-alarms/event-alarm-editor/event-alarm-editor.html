@@ -13,7 +13,7 @@
         </label>
         <div class="row">
             <label >
-                <span>date</span>
+                <span>start date</span>
                 <input type="date" [value]="facade.date()" (input)="facade.setDate($any($event.target).value)" />
             </label>
             <label >
@@ -31,6 +31,9 @@
                 </button>
             }
         </div>
+        <p class="repeat-description">
+            <small>{{facade.repeatDescription()}}</small>
+        </p>
         @switch (facade.repeat().type) {
             @case('daily'){
                 @if (facade.dailyRepeat(); as repeat) {

@@ -21,18 +21,14 @@ export class EventAlarmRingingFacade {
     readonly ringing = computed(() => this.ringingEvent() !== null);
 
     async ring(event: EventAlarm) {
-        console.log('[Ringing] ring()', event.title, event.sound);
         if (this.ringingEvent()) return;
 
         await this.wakelock.acquire();
-        console.log('[Ringing] wakelock acquired');
 
         this.ringingEvent.set(event);
 
         const canNotify = this.notification.canNotify(this.settings.notificationsEnabled());
-        console.log('[Ringing] canNotify:', canNotify);
         if (canNotify) {
-            console.log('[Ringing] notification.show');
             this.activeNotification = this.notification.show({
                 title: event.title,
                 body: event.description || event.time,
@@ -41,7 +37,6 @@ export class EventAlarmRingingFacade {
             })
         }
 
-        console.log('[Ringing] sound.play', event.sound);
         this.sound.play(event.sound);
     }
 

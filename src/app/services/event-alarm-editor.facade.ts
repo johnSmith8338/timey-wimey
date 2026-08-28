@@ -1,8 +1,9 @@
 import { computed, inject, Injectable } from "@angular/core";
 import { EventAlarmDraftSvc } from "./event-alarm-draft";
 import { TimerSound } from "./sound-svc";
-import { EventAlarm, EventAlarmRepeat } from "../models/alarm.interface";
+import { EventAlarm, EventAlarmRepeat, WeekDay } from "../models/alarm.interface";
 import { AlarmSvc } from "./alarm-svc";
+import { describeEventRepeat } from "../utils/event-alarm.utils";
 
 @Injectable({
     providedIn: 'root'
@@ -38,6 +39,10 @@ export class EventAlarmEditorFacade {
         const repeat = this.repeat();
         return repeat.type === 'yearly' ? repeat : null;
     });
+
+    readonly repeatDescription = computed(() => {
+        return describeEventRepeat(this.repeat());
+    })
 
     setTitle(value: string) {
         this.draft.patch({ title: value });

@@ -8,7 +8,7 @@ import { EventAlarm, EventAlarmDraft, EventAlarmRepeat } from "../models/alarm.i
 export class EventAlarmDraftSvc {
     readonly title = signal('');
     readonly description = signal('');
-    readonly date = signal('');
+    readonly date = signal(this.today());
     readonly time = signal('09:00');
     readonly repeat = signal<EventAlarmRepeat>({ type: 'once' });
     readonly sound = signal<TimerSound>('none');
@@ -21,7 +21,7 @@ export class EventAlarmDraftSvc {
     reset() {
         this.title.set('');
         this.description.set('');
-        this.date.set('');
+        this.date.set(this.today());
         this.time.set('09:00');
         this.repeat.set({ type: 'once' });
         this.sound.set('none');
@@ -78,5 +78,14 @@ export class EventAlarmDraftSvc {
     closeEditor() {
         this.reset();
         this.editorOpened.set(false);
+    }
+
+    private today(): string {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
     }
 }

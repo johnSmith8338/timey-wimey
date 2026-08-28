@@ -196,8 +196,9 @@ export class DonutChart extends ChartBase {
 
   buildTransform(arc: MorphArc) {
     if (this.hovered() !== arc.label) return '';
+
     const offset = this.hoverProgress() * 8;
-    const middle = (arc.currentStart + arc.currentEnd) / 2;
+    const middle = this.getArcMiddleAngle(arc);
 
     return `
     translate(
@@ -227,5 +228,12 @@ export class DonutChart extends ChartBase {
       if (job !== this.hoverJob) return;
       this.hovered.set(null);
     })
+  }
+
+  private getArcMiddleAngle(arc: MorphArc): number {
+    let delta = arc.currentEnd - arc.currentStart;
+    if (delta < 0) delta += Math.PI * 2;
+
+    return arc.currentStart + delta / 2;
   }
 }

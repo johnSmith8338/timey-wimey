@@ -4,24 +4,25 @@
         [attr.cy]="size()/2"
         [attr.r]="radius()" />
         @for (arc of renderArcs().slice(0,visibleCount()); track arc.label) {
-            <path #arc class="hover-hit" 
+            <path class="hover-hit" 
                 [attr.d]="buildPath(arc)" 
                 (pointerenter)="hoverEnter(arc.label)"
                 (pointerleave)="hoverLeave()" />
-            <path #arc class="arc" 
+            <path class="arc" 
                 [class.active]="hovered()===arc.label"
                 [attr.d]="buildPath(arc)" 
                 [attr.transform]="buildTransform(arc)"
                 [style.stroke]="colors()[$index]"
                 [style.--arc-color]="colors()[$index]"
                 [style.color]="colors()[$index]"
-                [attr.filter]="hovered()===arc.label ? 'url(#arcGlow)' : null" />
+                [attr.filter]="null" />
+                <!-- [attr.filter]="hovered()===arc.label ? 'url(#arcGlow)' : null" -->
         }
         <text class="total" [attr.x]="size()/2" [attr.y]="size()/2" [style.transform]="`scale(${totalScale()})`">{{animatedTotal()}}</text>
         <text class="subtitle" [attr.x]="size()/2" [attr.y]="size()/2+16">{{centerLabel()}}</text>
         <defs>
             <filter id="arcGlow" x="-40%" y="-40%" width="180%" height="180%">
-                <feDropShadow dx="0" dy="0" stdDeviation="4" flood-opacity="0.45" fllod-color="currentColor" />
+                <feDropShadow dx="0" dy="0" stdDeviation="4" flood-opacity="0.45" flood-color="currentColor" />
             </filter>
         </defs>
 </svg>
