@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { EventAlarmEditorFacade } from '../../../services/event-alarm-editor.facade';
 import { SoundSvc, TimerSound } from '../../../services/sound-svc';
 import { EventAlarmRepeat, WeekDay } from '../../../models/alarm.interface';
+import { AlarmTimePicker } from "../../alarm/alarm-editor/alarm-time-picker/alarm-time-picker";
 
 @Component({
   selector: 'app-event-alarm-editor',
-  imports: [],
+  imports: [AlarmTimePicker],
   templateUrl: './event-alarm-editor.html',
   styleUrl: './event-alarm-editor.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

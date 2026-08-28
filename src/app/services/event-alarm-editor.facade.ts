@@ -1,7 +1,7 @@
 import { computed, inject, Injectable } from "@angular/core";
 import { EventAlarmDraftSvc } from "./event-alarm-draft";
 import { TimerSound } from "./sound-svc";
-import { EventAlarm, EventAlarmRepeat, WeekDay } from "../models/alarm.interface";
+import { EventAlarm, EventAlarmRepeat } from "../models/alarm.interface";
 import { AlarmSvc } from "./alarm-svc";
 import { describeEventRepeat } from "../utils/event-alarm.utils";
 
@@ -11,6 +11,8 @@ import { describeEventRepeat } from "../utils/event-alarm.utils";
 export class EventAlarmEditorFacade {
     private readonly draft = inject(EventAlarmDraftSvc);
     private readonly alarms = inject(AlarmSvc);
+
+    readonly timeEngine = this.draft;
 
     readonly title = this.draft.title;
     readonly description = this.draft.description;
@@ -54,10 +56,6 @@ export class EventAlarmEditorFacade {
 
     setDate(value: string) {
         this.draft.patch({ date: value });
-    }
-
-    setTime(value: string) {
-        this.draft.patch({ time: value });
     }
 
     setRepeat(value: EventAlarmRepeat) {

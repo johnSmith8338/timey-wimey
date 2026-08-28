@@ -1,10 +1,10 @@
 <div class="wheels">
     <app-wheel-picker name="hour"
         [items]="hourItems"
-        [value]="draft.hour()"
-        (valueChange)="draft.updateHour($event)" />
+        [value]="engine().hour()"
+        (valueChange)="engine().updateHour($event)" />
     <app-wheel-picker name="minute"
         [items]="minuteItems"
-        [value]="draft.minute()"
-        (valueChange)="draft.updateMinute($event)" />
+        [value]="engine().minute()"
+        (valueChange)="engine().updateMinute($event)" />
 </div>

@@ -18,7 +18,7 @@
             </label>
             <label >
                 <span>time</span>
-                <input type="time" [value]="facade.time()" (input)="facade.setTime($any($event.target).value)" />
+                <app-alarm-time-picker [engine]="facade.timeEngine" />
             </label>
         </div>
         <div class="repeat">

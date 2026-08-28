@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { AlarmWorkspaceFacade } from '../../../../../services/alarm-workspace.facade';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { WheelPicker } from "../../../../../components/wheel-picker/wheel-picker";
+import { AlarmTimeEngine } from '../../../../../models/alarm-face-engine.interface';
 
 @Component({
   selector: 'app-alarm-wheel-picker',
@@ -10,9 +10,7 @@ import { WheelPicker } from "../../../../../components/wheel-picker/wheel-picker
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlarmWheelPicker {
-  readonly workspace = inject(AlarmWorkspaceFacade);
-
-  readonly draft = this.workspace.draft;
+  readonly engine = input.required<AlarmTimeEngine>();
 
   readonly hourItems = Array.from({ length: 24 }, (_, i) => i);
   readonly minuteItems = Array.from({ length: 60 }, (_, i) => i);

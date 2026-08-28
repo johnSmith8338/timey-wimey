@@ -1,21 +1,21 @@
 <div class="picker-mode">
-    <button (click)="inputMode.set('dial')">dial</button>
-    <button (click)="inputMode.set('inputs')">inputs</button>
-    <button (click)="inputMode.set('wheel')">wheel</button>
+    <button type="button" [class.active]="inputMode()==='dial'" (click)="inputMode.set('dial')">dial</button>
+    <button type="button" [class.active]="inputMode()==='inputs'" (click)="inputMode.set('inputs')">inputs</button>
+    <button type="button" [class.active]="inputMode()==='wheel'" (click)="inputMode.set('wheel')">wheel</button>
 </div>
 
 @switch (inputMode()) {
     @case ('dial') {
         <app-alarm-face 
-            [engine]="draft.faceEngine" 
+            [engine]="timeEngine()" 
             [mode]="faceMode()" 
             (dialStep)="dialChanged($event)"
             (dialFinished)="dialFinished()" />
     }
     @case ('inputs') {
-        <app-alarm-inputs />
+        <app-alarm-inputs [engine]="timeEngine()" />
     }
     @case ('wheel') {
-        <app-alarm-wheel-picker />
+        <app-alarm-wheel-picker [engine]="timeEngine()" />
     }
 }

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { AlarmWorkspaceFacade } from '../../../../../services/alarm-workspace.facade';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { AlarmTimeEngine } from '../../../../../models/alarm-face-engine.interface';
 
 @Component({
   selector: 'app-alarm-inputs',
@@ -9,18 +9,16 @@ import { AlarmWorkspaceFacade } from '../../../../../services/alarm-workspace.fa
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlarmInputs {
-  readonly workspace = inject(AlarmWorkspaceFacade);
-
-  readonly draft = this.workspace.draft;
+  readonly engine = input.required<AlarmTimeEngine>();
 
   updateHour(event: Event) {
-    this.draft.updateHour(
+    this.engine().updateHour(
       Number((event.target as HTMLInputElement).value)
     )
   }
 
   updateMinute(event: Event) {
-    this.draft.updateMinute(
+    this.engine().updateMinute(
       Number((event.target as HTMLInputElement).value)
     )
   }

@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { AlarmWorkspaceFacade } from '../../../../services/alarm-workspace.facade';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { AlarmFace } from "./alarm-face/alarm-face";
 import { AlarmDialStep } from '../../../../models/alarm-dial-step.interface';
 import { AlarmInputs } from "./alarm-inputs/alarm-inputs";
 import { AlarmWheelPicker } from "./alarm-wheel-picker/alarm-wheel-picker";
 import { AlarmTimeUnit } from '../../../../models/alarm-time-unit.type';
 import { AlarmInputMode } from '../../../../models/alarm-input-mode.type';
+import { AlarmTimeEngine } from '../../../../models/alarm-face-engine.interface';
+import { AlarmWorkspaceFacade } from '../../../../services/alarm-workspace.facade';
 
 @Component({
   selector: 'app-alarm-time-picker',
@@ -15,20 +16,22 @@ import { AlarmInputMode } from '../../../../models/alarm-input-mode.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlarmTimePicker {
-  readonly workspace = inject(AlarmWorkspaceFacade);
+  private readonly workspace = inject(AlarmWorkspaceFacade);
 
-  readonly draft = this.workspace.draft;
+  readonly engine = input<AlarmTimeEngine | null>(null);
 
   readonly inputMode = signal<AlarmInputMode>('dial');
   readonly faceMode = signal<AlarmTimeUnit>('hour');
 
+  readonly timeEngine = computed(() => this.engine() ?? this.workspace.draft)
+
   dialChanged(step: AlarmDialStep) {
     if (step.unit === 'hour') {
-      this.draft.updateHour(step.value);
+      this.timeEngine().updateHour(step.value);
       return;
     }
 
-    this.draft.updateMinute(step.value);
+    this.timeEngine().updateMinute(step.value);
   }
 
   dialFinished() {
