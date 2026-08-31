@@ -1,0 +1,15 @@
+<button type="button"
+    [class.active]="mode()==='dial'"
+    (click)="setMode('dial')">
+    dial
+</button>
+<button type="button"
+    [class.active]="mode()==='inputs'"
+    (click)="setMode('inputs')">
+    inputs
+</button>
+<button type="button"
+    [class.active]="mode()==='wheel'"
+    (click)="setMode('wheel')">
+    wheel
+</button>

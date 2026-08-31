@@ -1,0 +1,15 @@
+<app-wheel-picker name="day"
+    [items]="dayItems()"
+    [value]="date()?.day ?? 1"
+    (valueChange)="updateDay($event)" />
+
+<app-wheel-picker name="month"
+    [items]="monthItems"
+    [value]="date()?.month ?? 1"
+    [formatItem]="monthLabel"
+    (valueChange)="updateMonth($event)" />
+
+<app-wheel-picker name="year"
+    [items]="yearItems"
+    [value]="date()?.year ?? 2026"
+    (valueChange)="updateYear($event)" />

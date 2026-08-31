@@ -1,0 +1,24 @@
+<label >
+    <span>day</span>
+    <input type="number"
+        min="1"
+        max="31"
+        [value]="date()?.day ?? ''"
+        (input)="updateDay($any($event.target).value)" />
+</label>
+<label >
+    <span>month</span>
+    <input type="number"
+        min="1"
+        max="12"
+        [value]="date()?.month ?? ''"
+        (input)="updateMonth($any($event.target).value)" />
+</label>
+<label >
+    <span>year</span>
+    <input type="number"
+        min="1970"
+        max="2100"
+        [value]="date()?.year ?? ''"
+        (input)="updateYear($any($event.target).value)" />
+</label>

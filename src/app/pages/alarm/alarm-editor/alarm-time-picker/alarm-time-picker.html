@@ -1,10 +1,6 @@
-<div class="picker-mode">
-    <button type="button" [class.active]="inputMode()==='dial'" (click)="setInputMode('dial')">dial</button>
-    <button type="button" [class.active]="inputMode()==='inputs'" (click)="setInputMode('inputs')">inputs</button>
-    <button type="button" [class.active]="inputMode()==='wheel'" (click)="setInputMode('wheel')">wheel</button>
-</div>
+<app-picker-mode-selector />
 
-@switch (inputMode()) {
+@switch (pickerMode()) {
     @case ('dial') {
         <app-alarm-face 
             [engine]="timeEngine()" 

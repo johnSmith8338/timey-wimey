@@ -1,4 +1,5 @@
 import { AlarmInputMode } from "./alarm-input-mode.type";
+import { DatePickerMode } from "./date.model";
 
 export type AppTheme = 'light' | 'dark';
 
@@ -15,6 +16,7 @@ export interface AppSettings {
     alarmSortMode: AlarmSortMode;
     alarmAutoStopMinutes: AlarmAutoStopMinutes;
     alarmTimeInputMode: AlarmInputMode;
+    datePickerMode: DatePickerMode;
     firstRunCompleted: boolean;
     notificationsEnabled: boolean;
     notificationPromptShown: boolean;

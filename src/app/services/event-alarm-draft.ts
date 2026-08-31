@@ -1,6 +1,7 @@
 import { computed, Injectable, signal } from "@angular/core";
 import { TimerSound } from "./sound-svc";
 import { EventAlarm, EventAlarmDraft, EventAlarmRepeat } from "../models/alarm.interface";
+import { formatCalendarDate, todayCalendarDate } from "../utils/date-helper";
 
 @Injectable({
     providedIn: 'root'
@@ -8,7 +9,7 @@ import { EventAlarm, EventAlarmDraft, EventAlarmRepeat } from "../models/alarm.i
 export class EventAlarmDraftSvc {
     readonly title = signal('');
     readonly description = signal('');
-    readonly date = signal('');
+    readonly date = signal(formatCalendarDate(todayCalendarDate()));
     readonly hour = signal(9);
     readonly minute = signal(0);
 
@@ -29,7 +30,7 @@ export class EventAlarmDraftSvc {
 
         this.title.set('');
         this.description.set('');
-        this.date.set(this.toDateString(now));
+        this.date.set(formatCalendarDate(todayCalendarDate()));
         this.hour.set(9);
         this.minute.set(0);
         this.repeat.set({ type: 'once' });

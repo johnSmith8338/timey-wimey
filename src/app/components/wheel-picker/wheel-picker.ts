@@ -18,6 +18,9 @@ export class WheelPicker {
   readonly valueChange = output<number>();
   readonly name = input('');
   readonly disabled = input(false);
+  readonly formatItem = input<(item: number) => string>(
+    item => item.toString().padStart(2, '0')
+  );
 
   readonly wheelRef = viewChild<ElementRef<HTMLDivElement>>('wheel');
 

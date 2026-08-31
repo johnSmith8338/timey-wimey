@@ -14,7 +14,7 @@
         <div class="row">
             <label >
                 <span>start date</span>
-                <input type="date" [value]="facade.date()" (input)="facade.setDate($any($event.target).value)" />
+                <app-date-picker [value]="facade.date()" (valueChange)="facade.setDate($event)" />
             </label>
             <label >
                 <span>time</span>

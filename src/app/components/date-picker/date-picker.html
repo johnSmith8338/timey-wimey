@@ -1,0 +1,17 @@
+<div class="picker-mode">
+    <button type="button" [class.active]="mode()==='calendar'" (click)="setMode('calendar')">calendar</button>
+    <button type="button" [class.active]="mode()==='inputs'" (click)="setMode('inputs')">inputs</button>
+    <button type="button" [class.active]="mode()==='wheel'" (click)="setMode('wheel')">wheel</button>
+</div>
+
+@switch (mode()) {
+    @case ('calendar') {
+        <app-calendar-picker [selectedDate]="date()" (valueChange)="setDate($event)" />
+    }
+    @case ('inputs') {
+        <app-date-inputs [date]="date()" (valueChange)="setDate($event)" />
+    }
+    @case ('wheel') {
+        <app-date-wheel-picker [date]="date()" (valueChange)="setDate($event)" />
+    }
+}

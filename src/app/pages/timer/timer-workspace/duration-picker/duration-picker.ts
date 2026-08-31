@@ -3,17 +3,22 @@ import { WheelPicker } from "../../../../components/wheel-picker/wheel-picker";
 import { TimerWorkspaceFacade } from '../timer-workspace.facade';
 import { TimerFace } from "../timer-face/timer-face";
 import { DialStep } from '../../../../directives/timer-dial-editor';
+import { PickerModeSelector } from "../../../../components/picker-mode-selector/picker-mode-selector";
+import { SettingsSvc } from '../../../../services/settings-svc';
 
 @Component({
   selector: 'app-duration-picker',
-  imports: [WheelPicker, TimerFace],
+  imports: [WheelPicker, TimerFace, PickerModeSelector],
   templateUrl: './duration-picker.html',
   styleUrl: './duration-picker.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DurationPicker {
+  private readonly settingsSvc = inject(SettingsSvc);
   readonly facade = inject(TimerWorkspaceFacade);
+
   settings = this.facade.draft.settings;
+  readonly pickerMode = this.settingsSvc.alarmTimeInputMode;
 
   readonly hoursItems = Array.from({ length: 24 }, (_, i) => i);
   readonly minuteItems = Array.from({ length: 60 }, (_, i) => i);

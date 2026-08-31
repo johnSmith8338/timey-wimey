@@ -1,0 +1,21 @@
+<header>
+    <button type="button" (click)="previousMonth()">‹</button>
+    <strong>{{monthTitle()}} {{displayedYear()}}</strong>
+    <button type="button" (click)="nextMonth()">›</button>
+</header>
+<div class="weekdays">
+    @for (day of weekdays; track day) {
+        <span>{{day}}</span>
+    }
+</div>
+<div class="calendar-grid">
+    @for (day of days(); track day.date.year + '-' + day.date.month + '-' + day.date.day) {
+        <button type="button"
+            [class.other-month]="!day.currentMonth"
+            [class.today]="isToday(day.date)"
+            [class.selected]="isSelected(day.date)"
+            (click)="select(day.date)">
+            {{day.day}}
+        </button>
+    }
+</div>

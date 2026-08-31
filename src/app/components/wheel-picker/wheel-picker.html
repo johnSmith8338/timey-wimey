@@ -6,7 +6,7 @@
             [class.selected]="item===value()"
             (click)="valueChange.emit(item)"
             [disabled]="disabled()">
-            {{item.toString().padStart(2,'0')}}
+            {{formatItem()(item)}}
         </button>
     }
 </div>

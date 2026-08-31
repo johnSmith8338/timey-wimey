@@ -1,0 +1,36 @@
+:host {
+  display: block;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: .25rem;
+}
+
+.calendar-grid button {
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: .5rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.calendar-grid button.other-month {
+  opacity: .3;
+}
+
+.calendar-grid button.today {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+
+.calendar-grid button.selected {
+  background: currentColor;
+  color: white;
+}
+
+.calendar-grid button.today.selected {
+  outline: 2px solid currentColor;
+  outline-offset: -3px;
+}

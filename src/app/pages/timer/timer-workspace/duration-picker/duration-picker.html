@@ -1,31 +1,39 @@
 <div class="editor">
-    <app-timer-face mode="editor"
-        [engine]="facade.draft.engine"
-        (dialStep)="dialStep($event)" />
+    <app-picker-mode-selector />
 
-    <div class="inputs">
-        <input type="number" [value]="settings()?.hours ?? 0" (input)="updateHours($event)" [disabled]="disabled()" />
-        <input type="number" [value]="settings()?.minutes ?? 0" (input)="updateMinutes($event)" [disabled]="disabled()" />
-        <input type="number" [value]="settings()?.seconds ?? 0" (input)="updateSeconds($event)" [disabled]="disabled()" />
-    </div>
-
-    <div class="wheels">
-        <app-wheel-picker name="hours"
-            [items]="hoursItems"
-            [value]="settings()?.hours ?? 0"
-            (valueChange)="facade.draft.updateHours($event)"
-            [disabled]="disabled()" />
-
-        <app-wheel-picker name="minutes"
-            [items]="minuteItems"
-            [value]="settings()?.minutes ?? 0"
-            (valueChange)="facade.draft.updateMinutes($event)"
-            [disabled]="disabled()" />
-
-        <app-wheel-picker name="seconds"
-            [items]="secondItems"
-            [value]="settings()?.seconds ?? 0"
-            (valueChange)="facade.draft.updateSeconds($event)"
-            [disabled]="disabled()" />
-    </div>
+    @switch (pickerMode()) {
+        @case ('dial') {
+            <app-timer-face mode="editor"
+                [engine]="facade.draft.engine"
+                (dialStep)="dialStep($event)" />
+        }
+        @case ('inputs') {
+            <div class="inputs">
+                <input type="number" [value]="settings()?.hours ?? 0" (input)="updateHours($event)" [disabled]="disabled()" />
+                <input type="number" [value]="settings()?.minutes ?? 0" (input)="updateMinutes($event)" [disabled]="disabled()" />
+                <input type="number" [value]="settings()?.seconds ?? 0" (input)="updateSeconds($event)" [disabled]="disabled()" />
+            </div>
+        }
+        @case ('wheel') {
+            <div class="wheels">
+                <app-wheel-picker name="hours"
+                    [items]="hoursItems"
+                    [value]="settings()?.hours ?? 0"
+                    (valueChange)="facade.draft.updateHours($event)"
+                    [disabled]="disabled()" />
+        
+                <app-wheel-picker name="minutes"
+                    [items]="minuteItems"
+                    [value]="settings()?.minutes ?? 0"
+                    (valueChange)="facade.draft.updateMinutes($event)"
+                    [disabled]="disabled()" />
+        
+                <app-wheel-picker name="seconds"
+                    [items]="secondItems"
+                    [value]="settings()?.seconds ?? 0"
+                    (valueChange)="facade.draft.updateSeconds($event)"
+                    [disabled]="disabled()" />
+            </div>
+        }
+    }
 </div>

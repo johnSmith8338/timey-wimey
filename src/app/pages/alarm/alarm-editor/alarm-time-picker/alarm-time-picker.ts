@@ -8,10 +8,11 @@ import { AlarmInputMode } from '../../../../models/alarm-input-mode.type';
 import { AlarmTimeEngine } from '../../../../models/alarm-face-engine.interface';
 import { AlarmWorkspaceFacade } from '../../../../services/alarm-workspace.facade';
 import { SettingsSvc } from '../../../../services/settings-svc';
+import { PickerModeSelector } from "../../../../components/picker-mode-selector/picker-mode-selector";
 
 @Component({
   selector: 'app-alarm-time-picker',
-  imports: [AlarmFace, AlarmInputs, AlarmWheelPicker],
+  imports: [AlarmFace, AlarmInputs, AlarmWheelPicker, PickerModeSelector],
   templateUrl: './alarm-time-picker.html',
   styleUrl: './alarm-time-picker.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,7 +25,7 @@ export class AlarmTimePicker {
 
   readonly faceMode = signal<AlarmTimeUnit>('hour');
 
-  readonly inputMode = this.settings.alarmTimeInputMode;
+  readonly pickerMode = this.settings.alarmTimeInputMode;
 
   readonly timeEngine = computed(() => this.engine() ?? this.workspace.draft)
 
