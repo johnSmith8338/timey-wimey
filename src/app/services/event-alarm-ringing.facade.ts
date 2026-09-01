@@ -15,29 +15,19 @@ export class EventAlarmRingingFacade {
     private readonly settings = inject(SettingsSvc);
 
     readonly ringingEvent = signal<EventAlarm | null>(null);
+    readonly queue = signal<EventAlarm[]>([]);
 
     private activeNotification: Notification | null = null;
+    private starting = false;
+    private wakelockActive = false;
 
     readonly ringing = computed(() => this.ringingEvent() !== null);
+    readonly queueCount = computed(() => this.queue().length);
 
     async ring(event: EventAlarm) {
-        if (this.ringingEvent()) return;
-
-        await this.wakelock.acquire();
-
-        this.ringingEvent.set(event);
-
-        const canNotify = this.notification.canNotify(this.settings.notificationsEnabled());
-        if (canNotify) {
-            this.activeNotification = this.notification.show({
-                title: event.title,
-                body: event.description || event.time,
-                tag: `event-alarm-${event.id}`,
-                requireInteraction: true
-            })
-        }
-
-        this.sound.play(event.sound);
+        if (this.isActiveOrQueued(event.id)) return;
+        this.queue.update(queue => [...queue, event]);
+        if (!this.ringingEvent()) await this.startNext();
     }
 
     async stop() {
@@ -45,9 +35,61 @@ export class EventAlarmRingingFacade {
         if (!event) return;
 
         this.sound.stop();
+
         this.notification.close(this.activeNotification);
         this.activeNotification = null;
-        await this.wakelock.release();
+
         this.ringingEvent.set(null);
+
+        if (this.queue().length) {
+            await this.startNext();
+            return;
+        }
+
+        if (this.wakelockActive) {
+            await this.wakelock.release();
+            this.wakelockActive = false;
+        }
+    }
+
+    private isActiveOrQueued(id: string): boolean {
+        return (
+            this.ringingEvent()?.id === id || this.queue().some(event => event.id === id)
+        )
+    }
+
+    private async startNext() {
+        if (this.starting || this.ringingEvent()) return;
+
+        const queue = this.queue();
+        const next = queue[0];
+
+        if (!next) return;
+
+        this.starting = true;
+
+        try {
+            this.queue.update(queue => queue.slice(1));
+
+            if (!this.wakelockActive) {
+                await this.wakelock.acquire();
+                this.wakelockActive = true;
+            }
+
+            this.ringingEvent.set(next);
+
+            const canNotify = this.notification.canNotify(this.settings.notificationsEnabled());
+            if (canNotify) {
+                this.activeNotification = this.notification.show({
+                    title: next.title,
+                    body: next.description || next.time,
+                    tag: `event-alarm-${next.id}`,
+                    requireInteraction: true
+                })
+            }
+            this.sound.play(next.sound);
+        } finally {
+            this.starting = false;
+        }
     }
 }

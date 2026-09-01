@@ -453,4 +453,23 @@ export class AlarmSvc {
     )
     await this.persist();
   }
+
+  async reorderEvents(event: CdkDragDrop<EventAlarm[]>) {
+    const events = [...this.events()];
+
+    moveItemInArray(
+      events,
+      event.previousIndex,
+      event.currentIndex
+    )
+
+    const updated = events.map((event, index) => ({
+      ...event,
+      order: index,
+      updatedAt: Date.now()
+    }))
+
+    this.events.set(updated);
+    await this.persist();
+  }
 }

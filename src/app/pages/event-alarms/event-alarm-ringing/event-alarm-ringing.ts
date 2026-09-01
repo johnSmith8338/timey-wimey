@@ -10,8 +10,4 @@ import { EventAlarmRingingFacade } from '../../../services/event-alarm-ringing.f
 })
 export class EventAlarmRinging {
   readonly facade = inject(EventAlarmRingingFacade);
-
-  async stop() {
-    await this.facade.stop();
-  }
 }

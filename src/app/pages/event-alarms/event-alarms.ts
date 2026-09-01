@@ -5,10 +5,17 @@ import { EventAlarmDraftSvc } from '../../services/event-alarm-draft';
 import { EventAlarm } from '../../models/alarm.interface';
 import { describeEventRepeat } from '../../utils/event-alarm.utils';
 import { ConfirmDialog } from "../../components/confirm-dialog/confirm-dialog";
+import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList } from "@angular/cdk/drag-drop";
 
 @Component({
   selector: 'app-event-alarms',
-  imports: [EventAlarmEditor, ConfirmDialog],
+  imports: [
+    EventAlarmEditor,
+    ConfirmDialog,
+    CdkDrag,
+    CdkDragHandle,
+    CdkDropList,
+  ],
   templateUrl: './event-alarms.html',
   styleUrl: './event-alarms.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,10 +33,16 @@ export class EventAlarms {
 
   readonly filteredEvents = computed(() => {
     const query = this.normalize(this.search());
-    if (!query) return this.events();
+    if (!query) return this.sortedEvents();
 
-    return this.events().filter(event => this.matchesEvent(event, query));
+    return this.sortedEvents().filter(event => this.matchesEvent(event, query));
   })
+
+  readonly sortedEvents = computed(() =>
+    [...this.events()].sort((a, b) => a.order - b.order)
+  );
+
+  readonly dragEnabled = computed(() => !this.search().trim());
 
   constructor() {
     void this.alarms.load();
@@ -91,5 +104,9 @@ export class EventAlarms {
 
   cancelDeleteEvent() {
     this.deletingEvent.set(null);
+  }
+
+  drop(event: CdkDragDrop<EventAlarm[]>) {
+    this.alarms.reorderEvents(event);
   }
 }

@@ -4,6 +4,11 @@
             <header>
                 <span class="icon">⏰</span>
                 <span>event reminder</span>
+                @if (facade.queueCount(); as count) {
+                    @if (count>0) {
+                        <small>{{count}} more event(s) waiting</small>
+                    }
+                }
             </header>
             <main>
                 <h3>{{event.title}}</h3>

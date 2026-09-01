@@ -10,6 +10,16 @@ const WEEK_DAY_NAMES: Record<WeekDay, string> = {
     sunday: 'Sunday'
 };
 
+export const WEEK_DAY_ORDER: WeekDay[] = [
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday'
+];
+
 const MONTH_NAMES = [
     'January',
     'February',
@@ -33,7 +43,9 @@ export function describeEventRepeat(repeat: EventAlarmRepeat): string {
             return repeat.interval === 1 ? 'every day' : `every ${repeat.interval} days`;
         case 'weekly':
             if (!repeat.days.length) return 'every week';
-            return `every ${joinList(repeat.days.map(day => WEEK_DAY_NAMES[day]))}`;
+            return `every ${joinList([...repeat.days]
+                .sort((a, b) => WEEK_DAY_ORDER.indexOf(a) - WEEK_DAY_ORDER.indexOf(b))
+                .map(day => WEEK_DAY_NAMES[day]))}`;
         case 'monthly':
             return `every month on day ${repeat.day}`;
         case 'yearly':

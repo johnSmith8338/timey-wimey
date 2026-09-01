@@ -13,9 +13,16 @@
     </div>
 }
 @if (filteredEvents().length) {
-    <div class="event-list">
+    <div class="event-list"
+        cdkDropList
+        [cdkDropListData]="filteredEvents()"
+        [cdkDropListDisabled]="!dragEnabled()"
+        (cdkDropListDropped)="drop($event)">
         @for (event of filteredEvents(); track event.id) {
-            <div class="event-card">
+            <div class="event-card" cdkDrag [cdkDragDisabled]="!dragEnabled()">
+                @if (dragEnabled()) {
+                    <div class="drag-handle" cdkDragHandle>☰</div>
+                }
                 <div>
                     <h4>{{event.title}}</h4>
                     @if (event.description) {
