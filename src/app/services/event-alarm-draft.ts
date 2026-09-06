@@ -2,6 +2,7 @@ import { computed, Injectable, signal } from "@angular/core";
 import { TimerSound } from "./sound-svc";
 import { EventAlarm, EventAlarmDraft, EventAlarmRepeat } from "../models/alarm.interface";
 import { formatCalendarDate, todayCalendarDate } from "../utils/date-helper";
+import { VibrationMode, VibrationSetting } from "../models/settings.model";
 
 @Injectable({
     providedIn: 'root'
@@ -14,11 +15,11 @@ export class EventAlarmDraftSvc {
     readonly minute = signal(0);
 
     readonly time = computed(() =>
-        `${this.hour().toString().padStart(2, '0')}:
-        ${this.minute().toString().padStart(2, '0')}`
+        `${this.hour().toString().padStart(2, '0')}:${this.minute().toString().padStart(2, '0')}`
     );
     readonly repeat = signal<EventAlarmRepeat>({ type: 'once' });
     readonly sound = signal<TimerSound>('none');
+    readonly vibration = signal<VibrationSetting>('short');
     readonly editingId = signal<string | null>(null);
 
     readonly editorOpened = signal(false);
@@ -35,6 +36,7 @@ export class EventAlarmDraftSvc {
         this.minute.set(0);
         this.repeat.set({ type: 'once' });
         this.sound.set('none');
+        this.vibration.set('short');
         this.editingId.set(null);
         this.editorOpened.set(false);
     }
@@ -50,6 +52,7 @@ export class EventAlarmDraftSvc {
         this.minute.set(Number.isFinite(minute) ? minute : 0);
         this.repeat.set(structuredClone(event.repeat));
         this.sound.set(event.sound);
+        this.vibration.set(event.vibration ?? 'short');
         this.editingId.set(event.id);
         this.editorOpened.set(true);
     }
@@ -86,12 +89,14 @@ export class EventAlarmDraftSvc {
         date: string;
         repeat: EventAlarmRepeat;
         sound: TimerSound;
+        vibration: VibrationSetting;
     }>) {
         if (patch.title !== undefined) this.title.set(patch.title);
         if (patch.description !== undefined) this.description.set(patch.description);
         if (patch.date !== undefined) this.date.set(patch.date);
         if (patch.repeat !== undefined) this.repeat.set(patch.repeat);
         if (patch.sound !== undefined) this.sound.set(patch.sound);
+        if (patch.vibration !== undefined) this.vibration.set(patch.vibration);
     }
 
     snapshot(): EventAlarmDraft {
@@ -101,7 +106,8 @@ export class EventAlarmDraftSvc {
             date: this.date(),
             time: this.time(),
             repeat: structuredClone(this.repeat()),
-            sound: this.sound()
+            sound: this.sound(),
+            vibration: this.vibration()
         }
     }
 

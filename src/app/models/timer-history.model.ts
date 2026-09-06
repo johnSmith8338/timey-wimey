@@ -1,5 +1,6 @@
 import { TimerIcon } from "../constants/icons";
 import { TimerSound } from "../services/sound-svc";
+import { VibrationSetting } from "./settings.model";
 
 export type TimerHistoryStatus = 'finished' | 'cancelled';
 
@@ -9,6 +10,7 @@ export interface TimerHistorySnapshot {
     minutes: number;
     seconds: number;
     sound: TimerSound;
+    vibration: VibrationSetting;
     icon?: TimerIcon;
 }
 

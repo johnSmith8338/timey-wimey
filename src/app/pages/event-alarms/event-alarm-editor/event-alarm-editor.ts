@@ -4,10 +4,12 @@ import { SoundSvc, TimerSound } from '../../../services/sound-svc';
 import { EventAlarmRepeat, WeekDay } from '../../../models/alarm.interface';
 import { AlarmTimePicker } from "../../alarm/alarm-editor/alarm-time-picker/alarm-time-picker";
 import { DatePicker } from "../../../components/date-picker/date-picker";
+import { VibrationMode, VibrationSetting } from '../../../models/settings.model';
+import { VibrationPicker } from "../../../components/vibration-picker/vibration-picker";
 
 @Component({
   selector: 'app-event-alarm-editor',
-  imports: [AlarmTimePicker, DatePicker],
+  imports: [AlarmTimePicker, DatePicker, VibrationPicker],
   templateUrl: './event-alarm-editor.html',
   styleUrl: './event-alarm-editor.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

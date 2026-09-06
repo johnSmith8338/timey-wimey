@@ -3,6 +3,7 @@ import { BaseAlarm } from "./base-alarm";
 import { Alarm, AlarmRepeat } from "../models/alarm.interface";
 import { TimerSound } from "./sound-svc";
 import { AlarmFaceEngine } from "../models/alarm-face-engine.interface";
+import { VibrationSetting } from "../models/settings.model";
 
 @Injectable({
     providedIn: 'root'
@@ -44,6 +45,10 @@ export class DraftAlarm extends BaseAlarm {
 
     updateSound(sound: TimerSound) {
         this.activeAlarm.update(a => a ? { ...a, sound } : null);
+    }
+
+    updateVibration(vibration: VibrationSetting) {
+        this.activeAlarm.update(a => a ? { ...a, vibration } : null);
     }
 
     updateGroup(groupId: string | null) {

@@ -1,5 +1,6 @@
 import { TimerColor } from "../constants/colors";
 import { TimerSound } from "../services/sound-svc";
+import { VibrationMode, VibrationSetting } from "./settings.model";
 
 export interface AlarmGroup {
     id: string;
@@ -26,6 +27,7 @@ export interface Alarm {
     minute: number;
     repeat: AlarmRepeat[];
     sound: TimerSound;
+    vibration: VibrationSetting;
     createdAt: number;
     updatedAt: number;
     order: number;
@@ -41,6 +43,7 @@ export interface EventAlarm {
     date: string;
     time: string;
     sound: TimerSound;
+    vibration: VibrationSetting;
     enabled: boolean;
     repeat: EventAlarmRepeat;
     createdAt: number;
@@ -82,4 +85,5 @@ export interface EventAlarmDraft {
     time: string;
     repeat: EventAlarmRepeat;
     sound: TimerSound;
+    vibration: VibrationSetting;
 }

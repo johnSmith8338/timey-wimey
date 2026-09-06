@@ -4,6 +4,7 @@ import { NotificationSvc } from "./notification-svc";
 import { WakeLockSvc } from "./wake-lock-svc";
 import { SettingsSvc } from "./settings-svc";
 import { EventAlarm } from "../models/alarm.interface";
+import { VibrationSvc } from "./vibration-svc";
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +14,7 @@ export class EventAlarmRingingFacade {
     private readonly notification = inject(NotificationSvc);
     private readonly wakelock = inject(WakeLockSvc);
     private readonly settings = inject(SettingsSvc);
+    private readonly vibration = inject(VibrationSvc);
 
     readonly ringingEvent = signal<EventAlarm | null>(null);
     readonly queue = signal<EventAlarm[]>([]);
@@ -35,6 +37,7 @@ export class EventAlarmRingingFacade {
         if (!event) return;
 
         this.sound.stop();
+        this.vibration.stop();
 
         this.notification.close(this.activeNotification);
         this.activeNotification = null;
@@ -88,6 +91,7 @@ export class EventAlarmRingingFacade {
                 })
             }
             this.sound.play(next.sound);
+            this.vibration.vibrate(next.vibration);
         } finally {
             this.starting = false;
         }

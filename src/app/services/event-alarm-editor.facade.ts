@@ -4,6 +4,7 @@ import { TimerSound } from "./sound-svc";
 import { EventAlarm, EventAlarmRepeat } from "../models/alarm.interface";
 import { AlarmSvc } from "./alarm-svc";
 import { describeEventRepeat } from "../utils/event-alarm.utils";
+import { VibrationSetting } from "../models/settings.model";
 
 @Injectable({
     providedIn: 'root'
@@ -20,6 +21,7 @@ export class EventAlarmEditorFacade {
     readonly time = this.draft.time;
     readonly repeat = this.draft.repeat;
     readonly sound = this.draft.sound;
+    readonly vibration = this.draft.vibration;
     readonly editing = this.draft.editing;
 
     readonly dailyRepeat = computed(() => {
@@ -66,6 +68,10 @@ export class EventAlarmEditorFacade {
         this.draft.patch({ sound: value });
     }
 
+    setVibration(settings: VibrationSetting) {
+        this.draft.patch({ vibration: settings });
+    }
+
     async save() {
         const draft = this.draft.snapshot();
 
@@ -86,7 +92,8 @@ export class EventAlarmEditorFacade {
                 date: draft.date,
                 time: draft.time,
                 repeat: structuredClone(draft.repeat),
-                sound: draft.sound
+                sound: draft.sound,
+                vibration: draft.vibration
             })
         } else {
             const now = Date.now();
@@ -101,6 +108,7 @@ export class EventAlarmEditorFacade {
                 time: draft.time,
                 repeat: structuredClone(draft.repeat),
                 sound: draft.sound,
+                vibration: draft.vibration,
                 enabled: true,
                 createdAt: now,
                 updatedAt: now,

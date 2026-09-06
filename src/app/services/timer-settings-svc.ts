@@ -25,7 +25,8 @@ export class TimerSettingsSvc {
         seconds: 0,
         color: 'transparent',
         icon: '',
-        sound: 'ding'
+        sound: 'ding',
+        vibration: 'short'
       }
 
       await this.repo.saveSettings(settings);

@@ -238,6 +238,7 @@ export class AlarmSvc {
       enabled: true,
       repeat: [],
       sound: 'alarm',
+      vibration: 'short',
       order: 0,
       createdAt: Date.now(),
       updatedAt: Date.now()
@@ -393,6 +394,7 @@ export class AlarmSvc {
       date: '',
       time: '09:00',
       sound: 'none',
+      vibration: 'short',
       enabled: true,
       repeat: { type: 'once' },
       createdAt: now,

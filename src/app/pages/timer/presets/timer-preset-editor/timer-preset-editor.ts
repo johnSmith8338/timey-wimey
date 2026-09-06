@@ -8,6 +8,8 @@ import { IconPicker } from "../../../../components/icon-picker/icon-picker";
 import { ColorPicker } from "../../../../components/color-picker/color-picker";
 import { DurationPicker } from "../../timer-workspace/duration-picker/duration-picker";
 import { TimerPresetsFacade } from '../timer-presets.facade';
+import { VibrationSetting } from '../../../../models/settings.model';
+import { VibrationPicker } from "../../../../components/vibration-picker/vibration-picker";
 
 @Component({
   selector: 'app-timer-preset-editor',
@@ -16,6 +18,7 @@ import { TimerPresetsFacade } from '../timer-presets.facade';
     IconPicker,
     ColorPicker,
     DurationPicker,
+    VibrationPicker
   ],
   templateUrl: './timer-preset-editor.html',
   styleUrl: './timer-preset-editor.scss',
@@ -29,6 +32,7 @@ export class TimerPresetEditor {
   readonly icon = computed(() => this.preset()?.icon ?? DEFAULT_TIMER_ICON);
   readonly color = computed(() => this.preset()?.color ?? DEFAULT_TIMER_COLOR);
   readonly sound = computed(() => this.preset()?.sound ?? DEFAULT_TIMER_SOUND);
+  readonly vibration = computed(() => this.preset()?.vibration ?? 'short');
 
   save() {
     this.facade.savePreset();
@@ -64,5 +68,9 @@ export class TimerPresetEditor {
 
   setSound(sound: TimerSound) {
     this.draft.updateSound(sound);
+  }
+
+  setVibration(vibration: VibrationSetting) {
+    this.draft.updateVibration(vibration);
   }
 }

@@ -4,6 +4,7 @@ import { DbStore } from "../storage/database";
 import { TimerSound } from "../../services/sound-svc";
 import { TimerIcon } from "../../constants/icons";
 import { TimerColor } from "../../constants/colors";
+import { VibrationSetting } from "../../models/settings.model";
 
 export interface TimerPreset {
     id: string;
@@ -14,6 +15,7 @@ export interface TimerPreset {
     color: TimerColor;
     icon: TimerIcon;
     sound: TimerSound;
+    vibration: VibrationSetting;
     favorite: boolean;
     order: number;
     createdAt: number;
@@ -26,10 +28,14 @@ export interface TimerPreset {
 export class TimerRepository {
     private readonly storage = inject(IndexedDbEngine);
 
-    getAll() {
-        return this.storage.getAll<TimerPreset>(
+    async getAll() {
+        const timers = await this.storage.getAll<TimerPreset>(
             DbStore.Timers
         )
+        return timers.map(timer => ({
+            ...timer,
+            vibration: timer.vibration ?? 'short'
+        }))
     }
 
     save(timer: TimerPreset) {

@@ -7,6 +7,7 @@ import { NotificationSvc } from "./notification-svc";
 import { SettingsSvc } from "./settings-svc";
 import { TimerHistorySnapshot } from "../models/timer-history.model";
 import { DEFAULT_TIMER_ICON, TimerIcon } from "../constants/icons";
+import { VibrationSetting } from "../models/settings.model";
 
 export class TimerInstance extends BaseTimer<TimerEngine> {
     private readonly destroyRef = inject(DestroyRef);
@@ -32,6 +33,10 @@ export class TimerInstance extends BaseTimer<TimerEngine> {
 
     sound(): TimerSound {
         return this.preset()?.sound ?? this.historySnapshot()?.sound ?? 'none';
+    }
+
+    vibration(): VibrationSetting {
+        return this.preset()?.vibration ?? this.historySnapshot()?.vibration ?? 'short';
     }
 
     constructor() {

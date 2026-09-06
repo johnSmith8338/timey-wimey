@@ -1,0 +1,5 @@
+<button type="button"
+    [class.active]="settings.vibrationEnabled()"
+    (click)="settings.setVibrationEnabled(!settings.vibrationEnabled())">
+    {{settings.vibrationEnabled() ? 'enabled' : 'disabled'}}
+</button>

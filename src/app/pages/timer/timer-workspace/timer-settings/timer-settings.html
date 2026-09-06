@@ -11,4 +11,8 @@
         <label>sound</label>
         <app-sound-picker [value]="settings.sound" (valueChange)="setSound($event)" />
     </section>
+    <section>
+        <label >vibration</label>
+        <app-vibration-picker [value]="settings.vibration" (valueChange)="setVibration($event)" />
+    </section>
 }

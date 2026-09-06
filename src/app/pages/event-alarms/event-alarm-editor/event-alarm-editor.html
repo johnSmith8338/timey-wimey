@@ -117,6 +117,10 @@
                 }
             </div>
         </div>
+        <div class="vibration">
+            <span>vibration</span>
+            <app-vibration-picker [value]="facade.vibration()" (valueChange)="facade.setVibration($event)" />
+        </div>
         <div class="actions">
             <button type="button" (click)="facade.cancel()">cancel</button>
             <button type="button" (click)="facade.save()">save</button>

@@ -5,6 +5,7 @@ import { WakeLockSvc } from "./wake-lock-svc";
 import { NotificationSvc } from "./notification-svc";
 import { Subject } from "rxjs";
 import { SettingsSvc } from "./settings-svc";
+import { VibrationSvc } from "./vibration-svc";
 
 @Injectable({
     providedIn: 'root'
@@ -14,6 +15,7 @@ export class AlarmRingingFacade {
     private readonly wakelock = inject(WakeLockSvc);
     private readonly notification = inject(NotificationSvc);
     private readonly settings = inject(SettingsSvc);
+    private readonly vibration = inject(VibrationSvc);
 
     readonly stopped$ = new Subject<{
         alarm: Alarm;
@@ -53,6 +55,7 @@ export class AlarmRingingFacade {
         }
 
         this.soundSvc.play(alarm.sound);
+        this.vibration.vibrate(alarm.vibration);
 
         const autoStopMinutes = this.settings.alarmAutoStopMinutes();
         const autoStopMs = autoStopMinutes * 60_000;
@@ -62,6 +65,7 @@ export class AlarmRingingFacade {
             if (!current) return;
 
             this.soundSvc.stop();
+            this.vibration.stop();
             void this.wakelock.release();
             this.ringingAlarm.set(null);
 
@@ -86,6 +90,7 @@ export class AlarmRingingFacade {
         }
 
         this.soundSvc.stop();
+        this.vibration.stop();
         await this.wakelock.release();
         this.ringingAlarm.set(null);
 
@@ -108,6 +113,7 @@ export class AlarmRingingFacade {
         }
 
         this.soundSvc.stop();
+        this.vibration.stop();
         await this.wakelock.release();
 
         this.ringingAlarm.set(null);

@@ -4,6 +4,7 @@ import { TimerInstanceStore } from "../../../services/timer-instance.store";
 import { TimerSettingsSvc } from "../../../services/timer-settings-svc";
 import { TimerPreset } from "../../../core/repositories/timer.repository";
 import { DraftTimer } from "../../../services/draft-timer";
+import { VibrationSvc } from "../../../services/vibration-svc";
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +14,7 @@ export class TimerWorkspaceFacade {
     readonly settings = inject(TimerSettingsSvc);
     readonly instance = inject(TimerInstanceStore);
     readonly sound = inject(SoundSvc);
+    readonly vibration = inject(VibrationSvc);
 
     readonly dialogOpened = signal(false);
     readonly editorOpened = signal(true);
@@ -43,6 +45,7 @@ export class TimerWorkspaceFacade {
 
     stop() {
         this.sound.stop();
+        this.vibration.stop();
         this.dialogOpened.set(false);
         this.draft.restore();
     }
@@ -53,6 +56,7 @@ export class TimerWorkspaceFacade {
 
     reset() {
         this.sound.stop();
+        this.vibration.stop();
         this.draft.clear();
     }
 

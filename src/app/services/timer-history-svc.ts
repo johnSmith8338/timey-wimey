@@ -1,7 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { TimerHistoryRepository } from '../core/repositories/timer-history.repository';
 import { TimerHistoryItem, TimerHistorySnapshot, TimerHistoryStatus } from '../models/timer-history.model';
-import { TimerEngine } from './timer-engine';
 import { TimerInstance } from './timer-instance';
 import { SettingsSvc } from './settings-svc';
 import { cleanupHistory } from '../utils/history-cleanup';
@@ -34,6 +33,7 @@ export class TimerHistorySvc {
       minutes: timer.engine.totalMinutes(),
       seconds: timer.engine.totalSeconds(),
       sound: timer.sound(),
+      vibration: timer.vibration(),
       icon: timer.icon()
     }
 

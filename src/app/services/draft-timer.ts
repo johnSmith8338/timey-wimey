@@ -7,6 +7,7 @@ import { TimerColor } from "../constants/colors";
 import { TimerIcon } from "../constants/icons";
 import { TimerSound } from "./sound-svc";
 import { BaseTimer } from "./base-timer";
+import { VibrationSetting } from "../models/settings.model";
 
 @Injectable({
     providedIn: 'root'
@@ -34,6 +35,7 @@ export class DraftTimer extends BaseTimer<PreviewTimerEngine> {
             color: s.color,
             icon: s.icon,
             sound: s.sound,
+            vibration: s.vibration,
             favorite: false,
             order: 0,
             createdAt: 0,
@@ -109,6 +111,11 @@ export class DraftTimer extends BaseTimer<PreviewTimerEngine> {
     updateSound(sound: TimerSound) {
         this.preset.update(p => p ? { ...p, sound } : null);
         void this.settingsSvc.patch({ sound });
+    }
+
+    updateVibration(vibration: VibrationSetting) {
+        this.preset.update(p => p ? { ...p, vibration } : p);
+        void this.settingsSvc.patch({ vibration });
     }
 
     updateTitle(title: string) {

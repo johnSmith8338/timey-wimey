@@ -9,6 +9,8 @@
 
     <app-sound-picker [value]="sound()" (valueChange)="setSound($event)" />
 
+    <app-vibration-picker [value]="vibration()" (valueChange)="setVibration($event)" />
+
     <div class="buttons">
         <button (click)="save()">save</button>
         <button (click)="cancel()">cancel</button>

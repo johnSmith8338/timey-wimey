@@ -2,8 +2,9 @@ import { computed, inject, Injectable, signal } from "@angular/core";
 import { TimerPreset } from "../core/repositories/timer.repository";
 import { TimerInstanceFactory } from "./timer-instance.factory";
 import { TimerInstance } from "./timer-instance";
-import { DEFAULT_TIMER_SOUND, SoundSvc } from "./sound-svc";
+import { SoundSvc } from "./sound-svc";
 import { TimerHistoryItem } from "../models/timer-history.model";
+import { VibrationSvc } from "./vibration-svc";
 
 @Injectable({
     providedIn: 'root'
@@ -11,6 +12,7 @@ import { TimerHistoryItem } from "../models/timer-history.model";
 export class TimerInstanceStore {
     private readonly factory = inject(TimerInstanceFactory);
     private readonly soundSvc = inject(SoundSvc);
+    private readonly vibrationSvc = inject(VibrationSvc);
 
     readonly timers = signal<TimerInstance[]>([]);
     readonly active = signal<TimerInstance | null>(null);
@@ -63,6 +65,7 @@ export class TimerInstanceStore {
                 timer
             ])
             this.soundSvc.play(timer.sound());
+            this.vibrationSvc.vibrate(timer.vibration())
         }
     }
 

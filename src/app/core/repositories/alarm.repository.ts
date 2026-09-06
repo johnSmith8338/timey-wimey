@@ -3,11 +3,25 @@ import { Alarm, AlarmGroup, EventAlarm } from "../../models/alarm.interface";
 import { StorageEngine } from "../storage/storage-engine";
 import { DbStore } from "../storage/database";
 import { StorageKey } from "../storage/storage-keys";
+import { VibrationSetting } from "../../models/settings.model";
 
 interface AlarmStorage {
     groups: AlarmGroup[];
     alarms: Alarm[];
     events: EventAlarm[]
+}
+
+const normalizeVibration = (value: unknown): VibrationSetting => {
+    switch (value) {
+        case 'short':
+        case 'double':
+        case 'long':
+        case 'alarm':
+        case 'off':
+            return value;
+        default:
+            return 'short';
+    }
 }
 
 @Injectable({
@@ -24,8 +38,14 @@ export class AlarmRepository {
 
         return {
             groups: data?.groups ?? [],
-            alarms: data?.alarms ?? [],
-            events: data?.events ?? []
+            alarms: (data?.alarms ?? []).map(alarm => ({
+                ...alarm,
+                vibration: normalizeVibration(alarm.vibration)
+            })),
+            events: (data?.events ?? []).map(event => ({
+                ...event,
+                vibration: normalizeVibration(event.vibration)
+            }))
         }
     }
 

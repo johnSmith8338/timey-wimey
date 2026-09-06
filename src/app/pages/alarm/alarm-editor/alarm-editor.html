@@ -13,6 +13,8 @@
 
     <app-alarm-sound-picker />
 
+    <app-vibration-picker [value]="draft.alarm()?.vibration ?? 'short'" (valueChange)="draft.updateVibration($event)" />
+
     <label >
         <input type="checkbox" [ngModel]="draft.enabled()" (ngModelChange)="draft.toggleEnabled()"/>
         <span>enabled</span>

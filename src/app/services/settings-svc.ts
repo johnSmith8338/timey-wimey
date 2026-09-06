@@ -18,6 +18,7 @@ export class SettingsSvc {
   readonly alarmSortMode = computed(() => this.settings().alarmSortMode);
   readonly alarmAutoStopMinutes = computed(() => this.settings().alarmAutoStopMinutes);
   readonly alarmTimeInputMode = computed(() => this.settings().alarmTimeInputMode);
+  readonly vibrationEnabled = computed(() => this.settings().vibrationEnabled);
   readonly datePickerMode = computed(() => this.settings().datePickerMode);
   readonly firstRunCompleted = computed(() => this.settings().firstRunCompleted);
   readonly notificationsEnabled = computed(() => this.settings().notificationsEnabled);
@@ -79,6 +80,14 @@ export class SettingsSvc {
     this.settings.update(s => ({
       ...s,
       alarmTimeInputMode: mode
+    }))
+    await this.repo.save(this.settings());
+  }
+
+  async setVibrationEnabled(value: boolean) {
+    this.settings.update(s => ({
+      ...s,
+      vibrationEnabled: value
     }))
     await this.repo.save(this.settings());
   }
