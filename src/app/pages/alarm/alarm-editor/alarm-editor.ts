@@ -8,8 +8,8 @@ import { AlarmPreview } from "./alarm-preview/alarm-preview";
 import { AlarmTitleEditor } from "./alarm-title-editor/alarm-title-editor";
 import { AlarmGroupPicker } from "./alarm-group-picker/alarm-group-picker";
 import { AlarmSoundPicker } from "./alarm-sound-picker/alarm-sound-picker";
-import { AlarmGroupView } from '../../../models/alarm.interface';
-import { VibrationPicker } from "../../../components/vibration-picker/vibration-picker";
+// import { VibrationPicker } from "../../../components/vibration-picker/vibration-picker";
+import { AlarmVibrationPicker } from "./alarm-vibration-picker/alarm-vibration-picker";
 
 @Component({
   selector: 'app-alarm-editor',
@@ -21,7 +21,8 @@ import { VibrationPicker } from "../../../components/vibration-picker/vibration-
     AlarmTitleEditor,
     AlarmGroupPicker,
     AlarmSoundPicker,
-    VibrationPicker
+    // VibrationPicker,
+    AlarmVibrationPicker
   ],
   templateUrl: './alarm-editor.html',
   styleUrl: './alarm-editor.scss',

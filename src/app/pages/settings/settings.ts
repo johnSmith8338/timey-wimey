@@ -10,6 +10,7 @@ import { SetNotifications } from "./set-notifications/set-notifications";
 import { SetUpdateCheck } from "./set-update-check/set-update-check";
 import { SetAppInstallPrompt } from "./set-app-install-prompt/set-app-install-prompt";
 import { SetVibrationSetting } from "./set-vibration/set-vibration";
+import { SetSoundRampUp } from "./set-sound-ramp-up/set-sound-ramp-up";
 
 @Component({
   selector: 'app-settings',
@@ -23,7 +24,8 @@ import { SetVibrationSetting } from "./set-vibration/set-vibration";
     SetNotifications,
     SetUpdateCheck,
     SetAppInstallPrompt,
-    SetVibrationSetting
+    SetVibrationSetting,
+    SetSoundRampUp
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',

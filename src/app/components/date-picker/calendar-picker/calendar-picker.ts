@@ -135,4 +135,10 @@ export class CalendarPicker {
   isToday(date: CalendarDate): boolean {
     return (this.today.year === date.year && this.today.month === date.month && this.today.day === date.day)
   }
+
+  goToToday() {
+    this.displayedYear.set(this.today.year);
+    this.displayedMonth.set(this.today.month);
+    this.valueChange.emit(this.today);
+  }
 }

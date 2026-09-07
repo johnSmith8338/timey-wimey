@@ -1,0 +1,6 @@
+<app-sheet-select
+    title="choose vibration"
+    [items]="items()"
+    [selected]="draft.vibration()"
+    (selectedChange)="change($event)"
+    [(opened)]="opened" />

@@ -11,6 +11,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     alarmSortMode: 'manual',
     alarmAutoStopMinutes: 2,
     alarmTimeInputMode: 'dial',
+    alarmSoundRampUp: 'normal',
     vibrationEnabled: true,
     datePickerMode: 'calendar',
     firstRunCompleted: false,

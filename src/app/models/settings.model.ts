@@ -20,6 +20,14 @@ export const VIBRATION_PATTERNS: Record<Exclude<VibrationSetting, 'off'>, number
     alarm: [200, 100, 200, 100, 500]
 }
 
+export type AlarmSoundRampUp = 'off' | 'slow' | 'normal' | 'fast';
+
+export const ALARM_SOUND_RAMP_UP_DURATION: Record<Exclude<AlarmSoundRampUp, 'off'>, number> = {
+    slow: 15_000,
+    normal: 10_000,
+    fast: 5_000
+}
+
 export interface AppSettings {
     theme: AppTheme;
     historyRetentionDays: HistoryRetentionDays;
@@ -27,6 +35,7 @@ export interface AppSettings {
     alarmSortMode: AlarmSortMode;
     alarmAutoStopMinutes: AlarmAutoStopMinutes;
     alarmTimeInputMode: AlarmInputMode;
+    alarmSoundRampUp: AlarmSoundRampUp;
     vibrationEnabled: boolean;
     datePickerMode: DatePickerMode;
     firstRunCompleted: boolean;

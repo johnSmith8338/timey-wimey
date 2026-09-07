@@ -3,6 +3,7 @@
     <strong>{{monthTitle()}} {{displayedYear()}}</strong>
     <button type="button" (click)="nextMonth()">›</button>
 </header>
+<button type="button" class="today-button" (click)="goToToday()">today</button>
 <div class="weekdays">
     @for (day of weekdays; track day) {
         <span>{{day}}</span>

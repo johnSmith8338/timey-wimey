@@ -19,4 +19,8 @@ export class VibrationSvc {
   stop(): void {
     if ('vibrate' in navigator) navigator.vibrate(0);
   }
+
+  preview(setting: VibrationSetting): boolean {
+    return this.vibrate(setting);
+  }
 }
