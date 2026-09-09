@@ -27,7 +27,7 @@ export const routes: Routes = [
             title: 'dashboard',
             showInMenu: true,
             icon: '',
-            order: 1
+            order: 5
         }
     },
     {
@@ -49,7 +49,7 @@ export const routes: Routes = [
             title: 'timer',
             showInMenu: true,
             icon: '',
-            order: 3
+            order: 1
         }
     },
     {
@@ -71,7 +71,7 @@ export const routes: Routes = [
             title: 'event-alarms',
             showInMenu: true,
             icon: '',
-            order: 5
+            order: 3
         }
     },
     {

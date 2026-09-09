@@ -32,14 +32,14 @@ export class Welcome {
   constructor() {
     effect(() => {
       if (this.settings.settings().firstRunCompleted) {
-        void this.router.navigate(['dashboard']);
+        void this.router.navigate(['timer']);
       }
     })
   }
 
   private async completeFirstRun() {
     await this.settings.finishFirstRun();
-    await this.router.createUrlTree(['/dashboard']);
+    await this.router.createUrlTree(['/timer']);
   }
 
   finish() {

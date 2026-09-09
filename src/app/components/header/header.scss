@@ -1,3 +1,7 @@
 :host {
-  display: block;
+  display: grid;
+  justify-content: end;
+  position: fixed;
+  bottom: 36px;
+  right: 16px;
 }

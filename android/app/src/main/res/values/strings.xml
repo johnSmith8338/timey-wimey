@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">timey-wimey</string>
+    <string name="title_activity_main">timey-wimey</string>
+    <string name="package_name">com.timeywimey.app</string>
+    <string name="custom_url_scheme">com.timeywimey.app</string>
+</resources>
