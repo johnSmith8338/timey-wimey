@@ -1,5 +1,8 @@
-<button class="sheet-header" (click)="toggle()">
-    <span>{{title()}}</span>
+<button class="sheet-header" (click)="toggle()" [attr.aria-expanded]="opened()">
+    <!-- <span>{{title()}}</span> -->
+    @if (selectedItem(); as item) {
+        <strong>{{item.title}}</strong>
+    }
     <span>{{opened() ? '▲' : '▼'}}</span>
 </button>
 @if (opened()) {

@@ -9,6 +9,8 @@ export type AlarmSortMode = 'manual' | 'time';
 
 export type AlarmAutoStopMinutes = 1 | 2 | 3 | 5 | 10;
 
+export type AlarmTimeFormat = '12h' | '24h';
+
 export type VibrationMode = 'inherit' | 'off';
 
 export type VibrationSetting = 'off' | 'short' | 'double' | 'long' | 'alarm';
@@ -36,6 +38,7 @@ export interface AppSettings {
     alarmAutoStopMinutes: AlarmAutoStopMinutes;
     alarmTimeInputMode: AlarmInputMode;
     alarmSoundRampUp: AlarmSoundRampUp;
+    alarmTimeFormat: AlarmTimeFormat;
     vibrationEnabled: boolean;
     datePickerMode: DatePickerMode;
     firstRunCompleted: boolean;

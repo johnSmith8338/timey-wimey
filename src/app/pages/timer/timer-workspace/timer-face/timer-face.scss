@@ -13,6 +13,15 @@
   touch-action: none;
 }
 
+.dial-value {
+  pointer-events: none;
+  user-select: none;
+}
+
+.dial-value-number {
+  font-variant-numeric: tabular-nums;
+}
+
 .second-label {
   position: absolute;
   translate: -50% -50%;

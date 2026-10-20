@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { DEFAULT_SETTINGS, SettingsRepository } from '../core/repositories/settings.repositiry';
-import { AlarmAutoStopMinutes, AlarmSortMode, AlarmSoundRampUp, AppSettings, AppTheme, HistoryRetentionDays } from '../models/settings.model';
+import { AlarmAutoStopMinutes, AlarmSortMode, AlarmSoundRampUp, AlarmTimeFormat, AppSettings, AppTheme, HistoryRetentionDays } from '../models/settings.model';
 import { AlarmInputMode } from '../models/alarm-input-mode.type';
 import { DatePickerMode } from '../models/date.model';
 
@@ -19,6 +19,7 @@ export class SettingsSvc {
   readonly alarmAutoStopMinutes = computed(() => this.settings().alarmAutoStopMinutes);
   readonly alarmTimeInputMode = computed(() => this.settings().alarmTimeInputMode);
   readonly alarmSoundRampUp = computed(() => this.settings().alarmSoundRampUp);
+  readonly alarmTimeFormat = computed(() => this.settings().alarmTimeFormat);
   readonly vibrationEnabled = computed(() => this.settings().vibrationEnabled);
   readonly datePickerMode = computed(() => this.settings().datePickerMode);
   readonly firstRunCompleted = computed(() => this.settings().firstRunCompleted);
@@ -90,6 +91,15 @@ export class SettingsSvc {
       ...settings,
       alarmSoundRampUp: value
     }))
+    await this.repo.save(this.settings());
+  }
+
+  async setAlarmTimeFormat(value: AlarmTimeFormat): Promise<void> {
+    this.settings.update(settings => ({
+      ...settings,
+      alarmTimeFormat: value
+    }))
+
     await this.repo.save(this.settings());
   }
 

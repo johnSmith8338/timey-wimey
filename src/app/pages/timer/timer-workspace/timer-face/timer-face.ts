@@ -92,6 +92,18 @@ export class TimerFace {
     RING.circumference * (1 - this.smoothMinutes() / 60)
   )
 
+  readonly displaySeconds = computed(() =>
+    String(this.engine().remainingSeconds()).padStart(2, '0')
+  )
+
+  readonly displayMinutes = computed(() =>
+    String(this.engine().remainingMinutes()).padStart(2, '0')
+  )
+
+  readonly displayHours = computed(() =>
+    String(Math.floor(this.engine().remainingMs() / 3_600_000)).padStart(2, '0')
+  )
+
   dialChange(step: DialStep) {
     this.dialStep.emit(step);
   }

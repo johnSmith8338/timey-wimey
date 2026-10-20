@@ -1,4 +1,21 @@
 <div class="dial">
+    <div class="dial-values">
+        <div class="dial-value">
+            <span class="dial-value-label">HR</span>
+            <span class="dial-value-number">{{displayHours()}}</span>
+        </div>
+        <div class="dial-value-separator">:</div>
+        <div class="dial-value">
+            <span class="dial-value-label">MIN</span>
+            <span class="dial-value-number">{{displayMinutes()}}</span>
+        </div>
+        <div class="dial-value-separator">:</div>
+        <div class="dial-value">
+            <span class="dial-value-label">SEC</span>
+            <span class="dial-value-number">{{displaySeconds()}}</span>
+        </div>
+    </div>
+
     @for (label of secondLabels; track label.value) {
         <div class="second-label" [style.left.px]="label.x" [style.top.px]="label.y">{{label.value}}</div>
     }

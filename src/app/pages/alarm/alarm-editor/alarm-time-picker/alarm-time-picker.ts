@@ -9,6 +9,7 @@ import { AlarmTimeEngine } from '../../../../models/alarm-face-engine.interface'
 import { AlarmWorkspaceFacade } from '../../../../services/alarm-workspace.facade';
 import { SettingsSvc } from '../../../../services/settings-svc';
 import { PickerModeSelector } from "../../../../components/picker-mode-selector/picker-mode-selector";
+import { AlarmTimeFormat } from '../../../../models/settings.model';
 
 @Component({
   selector: 'app-alarm-time-picker',
@@ -26,6 +27,7 @@ export class AlarmTimePicker {
   readonly faceMode = signal<AlarmTimeUnit>('hour');
 
   readonly pickerMode = this.settings.alarmTimeInputMode;
+  readonly timeFormat = this.settings.alarmTimeFormat;
 
   readonly timeEngine = computed(() => this.engine() ?? this.workspace.draft)
 
@@ -44,5 +46,16 @@ export class AlarmTimePicker {
 
   setInputMode(mode: AlarmInputMode) {
     void this.settings.setAlarmTimeInputMode(mode);
+  }
+
+  setTimeFormat(value: AlarmTimeFormat) {
+    void this.settings.setAlarmTimeFormat(value);
+  }
+
+  toggleMeridiem() {
+    const engine = this.timeEngine();
+    const hour = engine.hour();
+
+    engine.updateHour((hour + 12) % 24);
   }
 }

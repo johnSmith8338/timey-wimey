@@ -7,6 +7,7 @@
     "ngsw:generate": "node scripts/generate-ngsw-config.mjs",
     "ngsw:clean": "node scripts/remove-generated-ngsw-config.mjs",
     "build": "node scripts/build-pwa.mjs",
+    "build:capacitor": "cross-env BUILD_TARGET=capacitor node scripts/build-pwa.mjs",
     "release:patch": "npm version patch && npm run build",
     "release:minor": "npm version minor && npm run build",
     "release:major": "npm version major && npm run build",

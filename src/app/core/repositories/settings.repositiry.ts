@@ -12,6 +12,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
     alarmAutoStopMinutes: 2,
     alarmTimeInputMode: 'dial',
     alarmSoundRampUp: 'normal',
+    alarmTimeFormat: '24h',
     vibrationEnabled: true,
     datePickerMode: 'calendar',
     firstRunCompleted: false,

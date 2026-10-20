@@ -1,38 +1,53 @@
-@for (tick of ticks; track tick) {
-    <div class="tick"
-        [class.major]="tick%5===0"
-        [style.rotate.deg]="tick*6"
-    ></div>
-}
-
-@if (mode()==='hour') {
-    @for (label of hourLabels; track label.value) {
-        <div class="label"
-            [style.left.px]="label.x"
-            [style.top.px]="label.y"
-        >
-            {{label.value}}
-        </div>
-    }
-}@else {
-    @for (label of minuteLabels; track label.value) {
-        <div class="label"
-            [style.left.px]="label.x"
-            [style.top.px]="label.y"
-        >
-            {{label.value}}
-        </div>
-    }
-}
-
-<div class="hand" [style.--angle.deg]="handAngle()" 
-    alarmDialEditor 
-    [unit]="mode()" 
+<div class="dial"
+    alarmDialEditor
     [currentHour]="engine().hour()"
-    (step)="dialStep.emit($event)" 
-    (finished)="dialFinished.emit()">
-    <span class="shaft"></span>
-    <span class="knob">
-        <span class="value">{{knobValue()}}</span>
-    </span>
+    (step)="dialStep.emit($event)"
+>
+    @for (tick of ticks; track tick) {
+        <div class="tick" [class.major]="tick%5===0" [style.rotate.deg]="tick*6"></div>
+    }
+
+    @for (label of hourLabels(); track label.value) {
+        <div class="label hour-label"
+            [style.left.px]="label.x"
+            [style.top.px]="label.y"
+        >
+            {{label.value}}
+        </div>
+    }
+
+    @for (label of minuteLabels; track label.value) {
+        <div class="label minute-label"
+            [style.left.px]="label.x"
+            [style.top.px]="label.y"
+        >
+            {{label.value.toString().padStart(2,'0')}}
+        </div>
+    }
+
+    <div class="hand hour-hand" [style.--angle.deg]="hourAngle()">
+        <span class="shaft"></span>
+        <span class="knob">
+            <span class="value">{{engine().hour().toString().padStart(2,'0')}}</span>
+        </span>
+    </div>
+
+    <div class="hand minute-hand" [style.--angle.deg]="minuteAngle()">
+        <span class="shaft"></span>
+        <span class="knob">
+            <span class="value">{{engine().minute().toString().padStart(2,'0')}}</span>
+        </span>
+    </div>
+
+    <!-- DIGITS -->
+    <div class="dial-values">
+        <span>{{displayHours()}}</span>
+        <div class="separator">:</div>
+        <span>{{displayMinutes()}}</span>
+
+        @if (timeFormat()==='12h') {
+            <button type="button" class="period" aria-label="switch am/pm" (click)="meridiemToggle.emit()">{{meridiem()}}</button>
+        }
+    </div>
 </div>
+

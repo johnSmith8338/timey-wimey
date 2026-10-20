@@ -1,4 +1,4 @@
-<button type="button"
+<!-- <button type="button"
     [class.active]="mode()==='dial'"
     (click)="setMode('dial')">
     dial
@@ -12,4 +12,10 @@
     [class.active]="mode()==='wheel'"
     (click)="setMode('wheel')">
     wheel
-</button>
+</button> -->
+<app-sheet-select
+    title=""
+    [items]="items"
+    [selected]="mode()"
+    (selectedChange)="setMode($event)"
+    [(opened)]="opened" />

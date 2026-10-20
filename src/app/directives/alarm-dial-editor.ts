@@ -9,21 +9,17 @@ export class AlarmDialEditor {
   private readonly host = inject(ElementRef<HTMLElement>);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly unit = input.required<AlarmTimeUnit>();
   readonly currentHour = input(0);
-
   readonly step = output<AlarmDialStep>();
-  finished = output();
 
   private pointerId: number | null = null;
+  private activeUnit: AlarmTimeUnit | null = null;
 
-  private lastHourValue = 0;
+  private lastHourAngle = 0;
   private turns = 0;
 
   constructor() {
     const element = this.host.nativeElement;
-
-    element.style.touchAction = 'none';
 
     element.addEventListener('pointerdown', this.pointerDown);
     element.addEventListener('pointermove', this.pointerMove);
@@ -38,61 +34,112 @@ export class AlarmDialEditor {
     })
   }
 
-  private pointerDown = (event: PointerEvent) => {
-    this.pointerId = event.pointerId;
-    this.host.nativeElement.setPointerCapture(event.pointerId);
+  private readonly pointerDown = (event: PointerEvent) => {
+    const element = this.host.nativeElement;
+    const position = this.getPosition(event);
+    if (!position) return;
 
-    if (this.unit() === 'hour') {
-      this.turns = Math.floor(this.currentHour() / 12);
-      this.lastHourValue = this.currentHour() % 12;
+    const target = event.target;
+    let unit: AlarmTimeUnit | null = null;
+
+    if (target instanceof Element && target.closest('.hour-hand')) {
+      unit = 'hour'
+    } else if (target instanceof Element && target.closest('.minute-hand')) {
+      unit = 'minute'
+    } else if (position.radius >= 0.60 && position.radius <= 0.96) {
+      unit = 'minute'
+    } else if (position.radius >= 0.25 && position.radius < 0.56) {
+      unit = 'hour'
     }
-    this.emitValue(event);
+
+    if (!unit) return;
+
+    this.pointerId = event.pointerId;
+    this.activeUnit = unit;
+
+    element.setPointerCapture(event.pointerId);
+
+    if (unit === 'hour') {
+      this.turns = Math.floor(this.currentHour() / 12);
+      this.lastHourAngle = position.angle;
+    }
+
+    this.emitValue(position.angle);
+    event.preventDefault();
   }
 
-  private pointerMove = (event: PointerEvent) => {
-    if (event.pointerId !== this.pointerId) return;
-    this.emitValue(event);
+  private readonly pointerMove = (event: PointerEvent) => {
+    if (event.pointerId !== this.pointerId || !this.activeUnit) return;
+
+    const position = this.getPosition(event);
+    if (!position) return;
+
+    this.emitValue(position.angle);
+    event.preventDefault();
   }
 
-  private pointerUp = (event: PointerEvent) => {
+  private readonly pointerUp = (event: PointerEvent) => {
     if (event.pointerId !== this.pointerId) return;
+
+    const element = this.host.nativeElement;
+
+    if (element.hasPointerCapture(event.pointerId)) {
+      element.releasePointerCapture(event.pointerId);
+    }
+
     this.pointerId = null;
-    this.host.nativeElement.releasePointerCapture(event.pointerId);
-    this.finished.emit();
+    this.activeUnit = null;
   }
 
-  private emitValue(event: PointerEvent) {
-    const rect = this.host.nativeElement.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dx = event.clientX - cx;
-    const dy = event.clientY - cy;
-
-    let angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    angle += 90;
-    if (angle < 0) angle += 360;
-
-    if (this.unit() === 'hour') {
-      const value = Math.floor(angle / 30) % 12;
-      const delta = value - this.lastHourValue;
-
-      if (delta < -6) this.turns++;
-      if (delta > 6) this.turns--;
-      this.turns = Math.max(0, Math.min(1, this.turns));
-      this.lastHourValue = value;
-
+  private emitValue(angle: number) {
+    if (this.activeUnit === 'minute') {
       this.step.emit({
-        unit: 'hour',
-        value: value + this.turns * 12
-      })
+        unit: 'minute',
+        value: Math.floor(angle / 6) % 60,
+      });
 
       return;
     }
 
-    const value = Math.floor(angle / 6) % 60;
+    if (this.activeUnit !== 'hour') return;
+
+    // При пересечении отметки 12 переключаем половину суток:
+    // 23 -> 00 и 00 -> 23, 11 -> 12 и 12 -> 11.
+    const angleDelta = angle - this.lastHourAngle;
+
+    if (angleDelta < -180 || angleDelta > 180) {
+      this.turns = this.turns === 0 ? 1 : 0;
+    }
+
+    this.lastHourAngle = angle;
+
+    const dialHour = Math.floor(angle / 30) % 12;
+
     this.step.emit({
-      unit: 'minute',
-      value
-    })
+      unit: 'hour',
+      value: dialHour + this.turns * 12,
+    });
+  }
+
+  private getPosition(event: PointerEvent,): { angle: number; radius: number } | null {
+    const rect = this.host.nativeElement.getBoundingClientRect();
+
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    const dx = event.clientX - cx;
+    const dy = event.clientY - cy;
+    const dialRadius = Math.min(rect.width, rect.height) / 2;
+
+    if (dialRadius === 0) return null;
+
+    let angle = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+
+    if (angle < 0) angle += 360;
+
+    return {
+      angle,
+      radius: Math.hypot(dx, dy) / dialRadius,
+    };
   }
 }

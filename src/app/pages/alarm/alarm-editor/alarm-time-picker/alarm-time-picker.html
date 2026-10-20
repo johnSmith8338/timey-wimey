@@ -1,12 +1,25 @@
+<div class="time-format-toggle" aria-label="time format">
+    <button type="button"
+        [class.active]="timeFormat()==='12h'"
+        [attr.aria-pressed]="timeFormat()==='12h'"
+        (click)="setTimeFormat('12h')"
+    >12h</button>
+    <button type="button"
+        [class.active]="timeFormat()==='24h'"
+        [attr.aria-pressed]="timeFormat()==='24h'"
+        (click)="setTimeFormat('24h')"
+    >24h</button>
+</div>
+
 <app-picker-mode-selector />
 
 @switch (pickerMode()) {
     @case ('dial') {
         <app-alarm-face 
-            [engine]="timeEngine()" 
-            [mode]="faceMode()" 
+            [engine]="timeEngine()"
+            [timeFormat]="timeFormat()"
             (dialStep)="dialChanged($event)"
-            (dialFinished)="dialFinished()" />
+            (meridiemToggle)="toggleMeridiem()" />
     }
     @case ('inputs') {
         <app-alarm-inputs [engine]="timeEngine()" />

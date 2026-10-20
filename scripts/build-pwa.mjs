@@ -30,6 +30,8 @@ function run(command, args) {
     }
 }
 
+const baseHref=process.env.BUILD_TARGET==='capacitor'?'/':'/timey-wimey/';
+
 try {
     run('node', ['scripts/generate-ngsw-config.mjs']);
 
@@ -39,7 +41,7 @@ try {
         '--configuration',
         'production',
         '--base-href',
-        '/timey-wimey/'
+        baseHref
     ]);
 } finally {
     if (fs.existsSync(generatedConfigPath)) {
