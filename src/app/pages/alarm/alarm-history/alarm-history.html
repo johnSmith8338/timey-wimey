@@ -23,8 +23,10 @@
                 <div class="main">
                     <strong>{{session.snapshot.title}}</strong>
                     <small>
-                        {{session.snapshot.hour.toString().padStart(2,'0')}}:
-                        {{session.snapshot.minute.toString().padStart(2,'0')}}
+                        {{alarmFormat.formatTime(
+                            session.snapshot.hour,
+                            session.snapshot.minute
+                        )}}
                     </small>
                     @if (ringCount(session)>1) {
                         <span>({{ringCount(session)}} rings)</span>

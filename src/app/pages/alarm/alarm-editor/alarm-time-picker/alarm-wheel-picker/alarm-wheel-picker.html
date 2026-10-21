@@ -1,8 +1,9 @@
 <div class="wheels">
-    <app-wheel-picker name="hour"
-        [items]="hourItems"
-        [value]="engine().hour()"
-        (valueChange)="engine().updateHour($event)" />
+    <app-alarm-hour-picker
+        mode="wheel"
+        [engine]="engine()"
+        [timeFormat]="timeFormat()"
+    />
     <app-wheel-picker name="minute"
         [items]="minuteItems"
         [value]="engine().minute()"

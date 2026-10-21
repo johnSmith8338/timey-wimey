@@ -11,6 +11,7 @@ import { SetUpdateCheck } from "./set-update-check/set-update-check";
 import { SetAppInstallPrompt } from "./set-app-install-prompt/set-app-install-prompt";
 import { SetVibrationSetting } from "./set-vibration/set-vibration";
 import { SetSoundRampUp } from "./set-sound-ramp-up/set-sound-ramp-up";
+import { SetAlarmFormat } from './set-alarm-format/set-alarm-format';
 
 @Component({
   selector: 'app-settings',
@@ -25,7 +26,8 @@ import { SetSoundRampUp } from "./set-sound-ramp-up/set-sound-ramp-up";
     SetUpdateCheck,
     SetAppInstallPrompt,
     SetVibrationSetting,
-    SetSoundRampUp
+    SetSoundRampUp,
+    SetAlarmFormat
   ],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',

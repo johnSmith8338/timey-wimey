@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AlarmHistoryFacade } from '../../../services/alarm-history.facade';
 import { AlarmHistoryItem, AlarmHistorySession, AlarmHistoryStatus } from '../../../models/alarm-history.interface';
+import { AlarmFormatSvc } from '../../../services/alarm-format-svc';
 
 @Component({
   selector: 'app-alarm-history',
@@ -11,6 +12,7 @@ import { AlarmHistoryItem, AlarmHistorySession, AlarmHistoryStatus } from '../..
 })
 export class AlarmHistory {
   readonly facade = inject(AlarmHistoryFacade);
+  readonly alarmFormat = inject(AlarmFormatSvc);
 
   readonly history = this.facade.history;
   readonly groups = this.facade.groupedHistory;
@@ -20,15 +22,8 @@ export class AlarmHistory {
   readonly snoozes = this.facade.snoozes;
   readonly missed = this.facade.missed;
 
-  formatTime(timesmap: number) {
-    return new Date(timesmap).toLocaleString([], {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    })
+  formatTime(timestamp: number) {
+    return this.alarmFormat.formatDateTime(timestamp);
   }
 
   readonly statusMap: Record<AlarmHistoryStatus, string> = {

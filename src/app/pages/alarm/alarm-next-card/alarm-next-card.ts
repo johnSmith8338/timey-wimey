@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { AlarmSvc } from '../../../services/alarm-svc';
+import { AlarmFormatSvc } from '../../../services/alarm-format-svc';
 
 @Component({
   selector: 'app-alarm-next-card',
@@ -10,6 +11,7 @@ import { AlarmSvc } from '../../../services/alarm-svc';
 })
 export class AlrmNextCard {
   private readonly alarmSvc = inject(AlarmSvc);
+  readonly alarmFormat = inject(AlarmFormatSvc);
 
   readonly next = this.alarmSvc.nextAlarm;
 

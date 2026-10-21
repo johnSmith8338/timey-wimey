@@ -1,0 +1,22 @@
+@if (mode()==='input') {
+    <input type="number"
+        [min]="timeFormat()==='12h'?1:0"
+        [max]="timeFormat()==='12h'?12:23"
+        [value]="displayHour()"
+        (change)="updateHour($event)"
+     />
+}@else {
+    <app-wheel-picker
+        name="hour"
+        [items]="hourItems()"
+        [value]="displayHour()"
+        (valueChange)="selectHour($event)"
+     />
+}
+
+@if (timeFormat()==='12h') {
+    <button type="button" class="period"
+        aria-label="switch am/pm"
+        (click)="toggleMeridiem()"
+    >{{meridiem()}}</button>
+}

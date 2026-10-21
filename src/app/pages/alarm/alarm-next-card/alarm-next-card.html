@@ -3,8 +3,10 @@
         <small>next alarm • {{dayText()}}</small>
         <strong>{{next()!.alarm.title}}</strong>
         <h3>
-            {{next()!.alarm.hour.toString().padStart(2,'0')}}:
-            {{next()!.alarm.minute.toString().padStart(2,'0')}}
+            {{alarmFormat.formatTime(
+                next()!.alarm.hour,
+                next()!.alarm.minute
+            )}}
         </h3>
         <span>{{remaining()}}</span>
     </div>

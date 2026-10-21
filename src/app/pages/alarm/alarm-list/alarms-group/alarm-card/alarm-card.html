@@ -3,8 +3,7 @@
     <div>
         <h4>{{alarm().title}}</h4>
         <strong>
-            {{alarm().hour.toString().padStart(2,'0')}}:
-            {{alarm().minute.toString().padStart(2,'0')}}
+            {{alarmFormat.formatTime(alarm().hour,alarm().minute)}}
         </strong>
     </div>
     <div>

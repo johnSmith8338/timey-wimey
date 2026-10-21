@@ -1,9 +1,9 @@
 <div class="inputs">
-    <input type="number"
-        min="0"
-        max="23"
-        [value]="engine().hour()"
-        (input)="updateHour($event)" />
+    <app-alarm-hour-picker
+        mode="input"
+        [engine]="engine()"
+        [timeFormat]="timeFormat()"
+     />
     :
     <input type="number"
         min="0"

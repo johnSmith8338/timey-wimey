@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { AlarmListFacade } from '../../../../../services/alarm-list.facade';
 import { Alarm } from '../../../../../models/alarm.interface';
 import { CdkDragHandle } from "@angular/cdk/drag-drop";
+import { AlarmFormatSvc } from '../../../../../services/alarm-format-svc';
 
 @Component({
   selector: 'app-alarm-card',
@@ -12,6 +13,7 @@ import { CdkDragHandle } from "@angular/cdk/drag-drop";
 })
 export class AlarmCard {
   readonly facade = inject(AlarmListFacade);
+  readonly alarmFormat = inject(AlarmFormatSvc);
 
   readonly alarm = input.required<Alarm>();
 
