@@ -4,6 +4,12 @@
   display: block;
 }
 
+:host[mode='display'] {
+  .dial {
+    display: none;
+  }
+}
+
 .dial {
   position: relative;
   inline-size: var(--scale-size);

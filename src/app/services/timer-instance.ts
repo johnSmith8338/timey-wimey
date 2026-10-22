@@ -79,4 +79,11 @@ export class TimerInstance extends BaseTimer<TimerEngine> {
             body: 'timer finished'
         })
     }
+
+    override async reset(): Promise<void> {
+        this.historySaved = true;
+        await this.history.add(this, 'cancelled');
+
+        this.engine.reset();
+    }
 }

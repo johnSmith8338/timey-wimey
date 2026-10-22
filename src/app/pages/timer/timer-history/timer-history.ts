@@ -39,9 +39,9 @@ export class TimerHistory {
     const elapsed = this.formatDuration(item.elapsedMs);
     const total = this.formatDuration(item.durationMs);
 
-    const percent = item.durationMs === 0 ? 0 : Math.round(item.elapsedMs / item.durationMs * 100);
+    const percent = item.durationMs === 0 ? 0 : item.elapsedMs / item.durationMs * 100;
 
-    return `${elapsed} / ${total} (${percent}%)`;
+    return `${elapsed} / ${total} (${percent.toFixed(2)}%)`;
   }
 
   run(item: TimerHistoryItem) {

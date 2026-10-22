@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal, Signal } from '@angular/core';
 import { SCALE_CENTER, SCALE_LABEL_RADIUS, SCALE_MINUTE_CENTER, SCALE_MINUTE_LABEL_RADIUS, SCALE_MINUTE_SIZE, SCALE_SIZE } from '../../../../constants/scale.constants';
 import { buildFiveSecondLabels, buildLabels, buildTicks } from '../../../../utils/clock-face.util';
-import { DialStep, TimerDialEditor } from "../../../../directives/timer-dial-editor";
+import { DialStep, DialUnit, TimerDialEditor } from "../../../../directives/timer-dial-editor";
 
 export interface TimerFaceEngine {
   remainingMs: Signal<number>;
@@ -40,6 +40,9 @@ export class TimerFace {
   readonly mode = input<TimerFaceMode>('display');
 
   readonly dialStep = output<DialStep>();
+
+  readonly activeUnit = signal<DialUnit | null>(null);
+  readonly showHoursAfterEdit = signal(false);
 
   readonly size = SCALE_SIZE;
   readonly center = SCALE_CENTER;
@@ -103,6 +106,31 @@ export class TimerFace {
   readonly displayHours = computed(() =>
     String(Math.floor(this.engine().remainingMs() / 3_600_000)).padStart(2, '0')
   )
+
+  readonly hasHours = computed(() =>
+    Math.floor(this.engine().remainingMs() / 3_600_000) > 0
+  );
+
+  readonly displayMilliseconds = computed(() =>
+    String(Math.floor(this.engine().remainingMs() % 1000)).padStart(2, '0')
+  )
+
+  private syncHoursVisibility = effect(() => {
+    const hasHours = this.hasHours();
+    const activeUnit = this.activeUnit();
+
+    if (activeUnit === null) this.showHoursAfterEdit.set(hasHours);
+  })
+
+  onInteractionStart(unit: DialUnit) {
+    this.activeUnit.set(unit);
+  }
+
+  onInteractionEnd(unit: DialUnit) {
+    this.activeUnit.set(null);
+
+    if (unit === 'minutes' && this.hasHours()) this.showHoursAfterEdit.set(true);
+  }
 
   dialChange(step: DialStep) {
     this.dialStep.emit(step);
